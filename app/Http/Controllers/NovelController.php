@@ -113,6 +113,7 @@ class NovelController extends Controller {
 			  'type' => $content['info']['type'],
 			  'utime' => strtotime($content['info']['utime']),
 			  'new' => $content['info']['new'],
+			  'link' => $content['info']['link'],
 			]);
 			$insert = array();
 			$num = 0;

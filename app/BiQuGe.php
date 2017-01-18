@@ -119,6 +119,7 @@ class BiQuGe {
 		  'type' => self::strcut('笔趣阁 > ', ' > ' . $name, $type),
 		  'new' => pq('#info p')->eq(3)->find('a')->text(),
 		  'utime' => self::strcut('更新：', '', $utime),
+		  'link'=>$url,
 		);
 		$list = pq('#list dl dd');
 		$start = false;

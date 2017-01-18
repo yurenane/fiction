@@ -66,7 +66,10 @@ Route::get('/car', function() {
 //===========
 Route::group(['middleware' => ['login']], function() {
 		Route::get('/', function() {
-				return view('fiction.index');
+			$info=DB::table('novel')
+				->orderBy('utime','desc')
+				->get();
+				return view('fiction.index',['info'=>$info]);
 			});
 		Route::get('/search', function() {
 				return view('fiction.search');
@@ -75,7 +78,8 @@ Route::group(['middleware' => ['login']], function() {
 				$user_info = session('user');
 				$novel_info = array();
 				if ($user_info->nlist) {
-					$novel_info = DB::table('user')
+					echo 1;
+					$novel_info = DB::table('novel')
 						->whereIn('id', [$user_info->nlist])
 						->get();
 				}
@@ -114,5 +118,6 @@ Route::group(['middleware' => ['login']], function() {
 			});
 		Route::controller('search', 'SearchController');
 		Route::controller('/novel/{name}/{link}', 'NovelController');
+		Route::controller('ajax', 'AjaxController');
 	});
 
