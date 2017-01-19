@@ -66,19 +66,21 @@ Route::get('/car', function() {
 //===========
 Route::group(['middleware' => ['login']], function() {
 		Route::get('/', function() {
-			$info=DB::table('novel')
-				->orderBy('utime','desc')
-				->get();
-				return view('fiction.index',['info'=>$info]);
+				$info = DB::table('novel')
+					->orderBy('utime', 'desc')
+					->get();
+				return view('fiction.index', ['info' => $info]);
 			});
 		Route::get('/search', function() {
 				return view('fiction.search');
 			});
 		Route::get('/user', function() {
 				$user_info = session('user');
+				$user_info = DB::table('user')
+					->where('id', $user_info->id)
+					->first();
 				$novel_info = array();
 				if ($user_info->nlist) {
-					echo 1;
 					$novel_info = DB::table('novel')
 						->whereIn('id', explode(',', $user_info->nlist))
 						->get();
