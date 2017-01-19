@@ -9,7 +9,7 @@ include_once('head.php');
 	<h1 class="page__title">List</h1>
 	<p class="page__desc">小说列表</p>
 </div>
-<div class="weui-panel__bd">
+<div class="weui-panel__bd" style="margin-bottom: 60px;">
 	<?php if($info){
 		foreach ($info as $val){?>
 	<a href="/novel/<?php echo $val->name; ?>/<?php echo base64_encode($val->link); ?>/1" class="weui-media-box weui-media-box_appmsg">
