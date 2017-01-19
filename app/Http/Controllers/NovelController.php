@@ -21,7 +21,7 @@ class NovelController extends Controller {
 	 * @author 简强
 	 * @version 17.1.12
 	 */
-	public function getIndex($name, $link) {
+	public function getIndex($name, $link, $jump = true) {
 		$result = $this->getNovelInfo($name);
 		if (!$result && $link) {
 			$this->getList(base64_decode($link)); //小说搜索并入库
@@ -30,7 +30,8 @@ class NovelController extends Controller {
 		$this->updateList($result->id, $link); //更新列表
 		//查看是否存在阅读记录
 		$read = $this->getReadLog($result->id);
-		if ($read) {
+//		PrintCss::r($server);
+		if ($read && $jump) {
 			return $this->getDetail($read->cid, $link);
 			exit;
 		}
@@ -50,14 +51,14 @@ class NovelController extends Controller {
 	public function getDetail($id, $link) {
 		$result = $this->getChapter($id);
 		if (!$result->content) {
-			$this->_getDetail($result->link, $id);//小说内容搜索并入库
-			$result = $this->getChapter($id);//再次获取数据
+			$this->_getDetail($result->link, $id); //小说内容搜索并入库
+			$result = $this->getChapter($id); //再次获取数据
 		}
 		$_id = explode('_', $id);
-		$this->updateRead($_id[1], $id);//更新阅读记录
-		$result->on = '/novel/' . $this->_id((int) $_id[0] - 1) . '_' . $_id[1] . '/' . $link . '/detail';
-		$result->list = '/novel/' . $_id[1] . '/' . $link;
-		$result->next = '/novel/' . $this->_id((int) $_id[0] + 1) . '_' . $_id[1] . '/' . $link . '/detail';
+		$this->updateRead($_id[1], $id); //更新阅读记录
+		$result->on = '/novel/' . $this->_id((int) $_id[0] - 1) . '_' . $_id[1] . '/' . $link . '/1/detail';
+		$result->list = '/novel/' . $_id[1] . '/' . $link.'/0';
+		$result->next = '/novel/' . $this->_id((int) $_id[0] + 1) . '_' . $_id[1] . '/' . $link . '/1/detail';
 //		PrintCss::r($result);
 		return view('fiction.detail', ['info' => $result]);
 	}
@@ -107,6 +108,7 @@ class NovelController extends Controller {
 		return DB::table('novel')
 //				->select('id', 'name', 'title','author','cover','type','new','utime','status')
 				->where('name', $name)
+				->orWhere('id', $name)
 				->first();
 	}
 

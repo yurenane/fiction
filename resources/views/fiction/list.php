@@ -32,7 +32,7 @@ include_once('head.php');
 <div class="page__bd">
 	<div class="weui-cells">
 		<?php foreach ($info['list'] as $val){?>
-		<a class="weui-cell weui-cell_access" href="/novel/<?php echo $val->id;?>/<?php echo $info['link'];?>/detail">
+		<a class="weui-cell weui-cell_access" href="/novel/<?php echo $val->id;?>/<?php echo $info['link'];?>/1/detail">
 					<div class="weui-cell__bd">
 						<p><?php echo $val->title;?></p>
 					</div>

@@ -117,7 +117,7 @@ Route::group(['middleware' => ['login']], function() {
 				echo json_encode(array('code' => 1000, 'info' => '注册成功'));
 			});
 		Route::controller('search', 'SearchController');
-		Route::controller('/novel/{name}/{link}', 'NovelController');
+		Route::controller('/novel/{name}/{link}/{jump}', 'NovelController');
 		Route::controller('ajax', 'AjaxController');
 	});
 

@@ -12,7 +12,7 @@ include_once('head.php');
 <div class="weui-panel__bd">
 	<?php if($info){
 		foreach ($info as $val){?>
-		<a href="/novel/<?php echo $val->name; ?>/<?php echo base64_encode($val->link); ?>" class="weui-media-box weui-media-box_appmsg">
+		<a href="/novel/<?php echo $val->name; ?>/<?php echo base64_encode($val->link); ?>/1" class="weui-media-box weui-media-box_appmsg">
 		<div class="weui-media-box__hd" style="width:auto;height:auto;">
 			<img style="width:100px;height:125px;" class="weui-media-box__thumb" src="<?php echo IMG_PATH.'fiction/'. $val->id.'.jpg' ?>" alt="">
 		</div>
