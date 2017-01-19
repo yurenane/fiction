@@ -50,16 +50,16 @@ $(function(){
 		var pwd=$('#pwd').val();
 		var repwd=$('#repwd').val();
 		if(!name||!pwd||!repwd){
-			alert('信息不能为空');
+			send('信息不能为空');
 			return false;
 		}
 		if(repwd!=pwd){
-			alert('两次密码输入不一致');
+			send('两次密码输入不一致');
 			return false;
 		}
 		$.post('/register',{'name':name,'pwd':pwd},function(result){
 			if(result.code==1000){
-				alert('注册成功');
+				send('注册成功');
 				setTimeout(function(){
 					window.location.href='/login';
 				},2000);

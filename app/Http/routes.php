@@ -80,7 +80,7 @@ Route::group(['middleware' => ['login']], function() {
 				if ($user_info->nlist) {
 					echo 1;
 					$novel_info = DB::table('novel')
-						->whereIn('id', [$user_info->nlist])
+						->whereIn('id', explode(',', $user_info->nlist))
 						->get();
 				}
 				return view('fiction.user', ['info' => $novel_info])->with('user_name', $user_info->name);

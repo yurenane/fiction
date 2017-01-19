@@ -41,13 +41,6 @@ include_once('head.php');
 		<?php }?>
         </div>
 </div>
-<div id="toast" style="opacity: 0;display:none;">
-        <div class="weui-mask_transparent"></div>
-        <div class="weui-toast">
-            <i class="weui-icon-success-no-circle weui-icon_toast"></i>
-            <p class="weui-toast__content">添加成功</p>
-        </div>
-    </div>
 <?php }else{
 	?>
 <div class="weui-msg">
@@ -69,10 +62,7 @@ $(function(){
 	$('#add').click(function(){
 		$.post('/ajax/collect',{'id':id},function(result){
 			if(result.code==1000){
-				$('#toast').show().css('opacity',1);
-				setTimeout(function(){
-					$('#toast').hide().css('opacity',0);
-				},3000);
+				send();
 			}else{
 				alert(result.error);
 			}

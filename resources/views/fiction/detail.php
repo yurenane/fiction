@@ -5,19 +5,19 @@ $page = array(
 
 include_once('head.php');
 ?>
-<?php if ($info['title']) { ?>
+<?php if ($info) { ?>
 	<div class="page__bd">
 		<article class="weui-article">
-			<h1><?php echo $info['title']; ?></h1>
-			<section>
-				<?php echo $info['content']; ?>
+			<h1><?php echo $info->title; ?></h1>
+			<section style="font-size: 18px;">
+				<?php echo $info->content; ?>
 			</section>
 		</article>
 		<div class="weui-footer" style="margin-bottom: 60px;">
 			<p class="weui-footer__links">
-				<a href="<?php echo $info['on'];?>" class="weui-footer__link">上一章</a>
-				<a href="<?php echo $info['list'];?>" class="weui-footer__link">目录</a>
-				<a href="<?php echo $info['next'];?>" class="weui-footer__link">下一章</a>
+				<a href="<?php echo $info->on;?>" class="weui-footer__link">上一章</a>
+				<a href="<?php echo $info->list;?>" class="weui-footer__link">目录</a>
+				<a href="<?php echo $info->next;?>" class="weui-footer__link">下一章</a>
 			</p>
 			<p class="weui-footer__text">@2017</p>
 		</div>

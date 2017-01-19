@@ -74,10 +74,13 @@ class BiQuGe {
 			$list = pq('.result-list .result-item');
 			foreach ($list as $val) {
 				$name = pq($val)->find('.result-item-title a')->attr('title');
+				//获取图片，转成base64
+				$img = pq($val)->find('.result-game-item-pic img')->attr('src');
 				$info[] = array(
 				  'name' => $name,
 				  '_name' => urlencode($name),
-				  'img' => pq($val)->find('.result-game-item-pic img')->attr('src'),
+				  '_img' => $img,
+				  'img' => 'data:image/jpg;base64,' . base64_encode(file_get_contents($img)),
 				  'title' => self::clear(pq($val)->find('.result-game-item-desc')->text()),
 				  'author' => self::clear(pq($val)->find('.result-game-item-info p')->eq(0)->find('span')->eq(1)->text()),
 				  'type' => rtrim(pq($val)->find('.result-game-item-info p')->eq(1)->find('span')->eq(1)->text()),
@@ -119,7 +122,7 @@ class BiQuGe {
 		  'type' => self::strcut('笔趣阁 > ', ' > ' . $name, $type),
 		  'new' => pq('#info p')->eq(3)->find('a')->text(),
 		  'utime' => self::strcut('更新：', '', $utime),
-		  'link'=>$url,
+		  'link' => $url,
 		);
 		$list = pq('#list dl dd');
 		$start = false;
@@ -152,25 +155,60 @@ class BiQuGe {
 //		$url='http://'.$host.'/wapbook/'.$id[1].'_'.$_url[4];   移动端站点
 		phpQuery::newDocumentFile($url);
 //		phpQuery::newDocumentHTML($content);
-		$content=pq('#content')->text();
-		$content=str_replace(array("\r\n", "\r", "\n", ' '), '</p><p>', $content);
+		$content = pq('#content')->text();
+		$content = str_replace(array("\r\n", "\r", "\n", ' '), '</p><p>', $content);
 //		PrintCss::r('<p>'.$content.'</p>');
-		return array('title' => self::clear(pq('.bookname h1')->text()), 'content' => '<p>'.$content.'</p>');
+		return array('title' => self::clear(pq('.bookname h1')->text()), 'content' => '<p>' . $content . '</p>');
 	}
+
 	/**
 	 * 更新小说列表
 	 * ======
 	 * @author 简强
 	 * @version 17.1.16
 	 */
-	public static function update($url,$total){
-		
+	public static function update($url, $chapter) {
+		$_url = explode('/', $url);
+		$host = $_url[2];
+		$curl = new Curl();
+		$curl->setReferer('http://' . $host);
+		$curl->setHeader(array('Host:' . $host));
+		$content = $curl->get($url);
+		phpQuery::newDocumentHTML($content);
+		$list = pq('#list dl dd');
+		$start = false;
+		$info = array();
+		foreach ($list as $val) {
+			$title = pq($val)->find('a')->text();
+			if ($start) {
+				$info[] = array(
+				  'title' => $title,
+				  'link' => 'http://' . $host . pq($val)->find('a')->attr('href'),
+				);
+			}
+			if ($title == $chapter->title) {
+				$start = true;
+			}
+		}
+		return $info;
 	}
 
+	/**
+	 * 文本内容清理
+	 * ======
+	 * @author 简强
+	 * @version 17.1.12
+	 */
 	private static function clear($content) {
 		return str_replace(array("\r\n", "\r", "\n", ' '), '', $content);
 	}
 
+	/**
+	 * 字符串剪切
+	 * ======
+	 * @author 简强
+	 * @version 17.1.12
+	 */
 	private static function strcut($start, $end, $string) {
 		$len = strlen($string) - strpos($string, $start) - strlen($start);
 		$len -=$end ? (strlen($string) - strpos($string, $end)) : 0;

@@ -41,12 +41,12 @@ $(function(){
 		var name=$('#name').val();
 		var pwd=$('#pwd').val();
 		if(!name||!pwd){
-			alert('信息不能为空');
+			send('信息不能为空');
 			return false;
 		}
 		$.post('/login',{'name':name,'pwd':pwd},function(result){
 			if(result.code==1000){
-				alert('登录成功');
+				send('登录成功');
 				setTimeout(function(){
 					window.location.href='/user';
 				},1000);
