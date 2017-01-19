@@ -50,14 +50,18 @@ class NovelController extends Controller {
 	 */
 	public function getDetail($id, $link) {
 		$result = $this->getChapter($id);
+		$_id = explode('_', $id);
+		if (!$result) {
+			return $this->getIndex($_id[1], $link, false);
+			exit;
+		}
 		if (!$result->content) {
 			$this->_getDetail($result->link, $id); //小说内容搜索并入库
 			$result = $this->getChapter($id); //再次获取数据
 		}
-		$_id = explode('_', $id);
 		$this->updateRead($_id[1], $id); //更新阅读记录
 		$result->on = '/novel/' . $this->_id((int) $_id[0] - 1) . '_' . $_id[1] . '/' . $link . '/1/detail';
-		$result->list = '/novel/' . $_id[1] . '/' . $link.'/0';
+		$result->list = '/novel/' . $_id[1] . '/' . $link . '/0';
 		$result->next = '/novel/' . $this->_id((int) $_id[0] + 1) . '_' . $_id[1] . '/' . $link . '/1/detail';
 //		PrintCss::r($result);
 		return view('fiction.detail', ['info' => $result]);
