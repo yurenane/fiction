@@ -60,7 +60,7 @@ class Crawl {
 			}
 			DB::table('chapter')->insert($insert);
 			$title = $result[count($result) - 1]['title'];
-			DB::table('novel')->where('id', $id)->update(array('new' => $title));
+			DB::table('novel')->where('id', $id)->update(array('new' => $title,'utime'=>time()));
 			return $title;
 		} else {
 			return false;

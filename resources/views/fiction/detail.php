@@ -14,12 +14,12 @@ include_once('head.php');
 			</section>
 		</article>
 		<div class="weui-footer" style="margin-bottom: 60px;">
-			<p class="weui-footer__links">
+	<!--			<p class="weui-footer__links">
 				<a href="javascript:;" class="weui-footer__link" id="on">上一章</a>
-				<a href="/novel/<?php echo $info->list; ?>/<?php echo $info->link; ?>/" class="weui-footer__link" id="list">目录</a>
+				<a href="/novel/<?php //echo $info->list;          ?>/<?php //echo $info->link;          ?>/" class="weui-footer__link" id="list">目录</a>
 				<a href="javascript:;" class="weui-footer__link" id="next">下一章</a>
 				<a href="javascript:;" class="weui-footer__link" id="cache" >缓存</a>
-			</p>
+			</p>-->
 			<p class="weui-footer__text">@2017</p>
 		</div>
 	</div>
@@ -50,6 +50,31 @@ include_once('head.php');
 		</div>
 	</div>
 <?php } ?>
+<p style="position:fixed;width: 100%;height: 25px;left: 0;bottom: 0;background-color: #bdbdbd;opacity: 0.8;color: #000;font-size: 12px;line-height: 25px;display:none;" id="cache-info">
+	数据缓存中.........             请勿刷新页面!
+</p>
+<div class="weui-tabbar" style="position:fixed;">
+	<a href="/user" class="weui-tabbar__item ">
+		<img src="<?php echo IMG_PATH; ?>user.png" alt="" class="weui-tabbar__icon">
+		<p class="weui-tabbar__label">我</p>
+	</a>
+	<a href="javascript:;" class="weui-tabbar__item" id="no">
+		<img src="<?php echo IMG_PATH; ?>up.png" alt="" class="weui-tabbar__icon">
+		<p class="weui-tabbar__label">上一章</p>
+	</a>
+	<a href="/novel/<?php echo $info->list; ?>/<?php echo $info->link; ?>/" class="weui-tabbar__item ">
+		<img src="<?php echo IMG_PATH; ?>Adjustments.png" alt="" class="weui-tabbar__icon">
+		<p class="weui-tabbar__label">目录</p>
+	</a>
+	<a href="javascript:;" class="weui-tabbar__item" id="next">
+		<img src="<?php echo IMG_PATH; ?>lower.png" alt="" class="weui-tabbar__icon">
+		<p class="weui-tabbar__label">下一章</p>
+	</a>
+	<a href="javascript:;" class="weui-tabbar__item" id="cache">
+		<img src="<?php echo IMG_PATH; ?>Lightbulb.png" alt="" class="weui-tabbar__icon">
+		<p class="weui-tabbar__label">缓存</p>
+	</a>
+</div>
 <script>
 	$(function() {
 		var on = '<?php echo $info->on; ?>',
@@ -57,13 +82,15 @@ include_once('head.php');
 				link = '<?php echo $info->link; ?>',
 				chapter_id = '<?php echo $info->chapter_id; ?>',
 				novel_id = '<?php echo $info->novel_id; ?>',
-				p = 1,
+				length = JSON.stringify(localStorage).length,
 				chapter = {};
-//		localStorage.setItem(novel_id, '{}');
-		console.log(JSON.parse(localStorage.getItem(novel_id)));
+		$('.weui-tabbar__item').on('click', function() {
+			$(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+		});
+//		localStorage.clear();
 		$('#on').click(function() {
 			if (checkCache(on)) {
-				window.location.href='/novel/'+on+'/'+link+'/detail';
+				window.location.href = '/novel/' + on + '/' + link + '/detail';
 			} else {
 				next = chapter_id;
 				chapter_id = on;
@@ -72,7 +99,7 @@ include_once('head.php');
 		});
 		$('#next').click(function() {
 			if (checkCache(next)) {
-				window.location.href='/novel/'+next+'/'+link+'/detail';
+				window.location.href = '/novel/' + next + '/' + link + '/detail';
 			} else {
 				on = chapter_id;
 				chapter_id = next;
@@ -88,10 +115,10 @@ include_once('head.php');
 			$('#actionsheet').removeClass('weui-actionsheet_toggle');
 		});
 		$('#cache-next').click(function() {
-			getInfo(false);
+			getInfo(chapter_id);
 		});
 		$('#cache-all').click(function() {
-			getInfo(true);
+			getInfo('');
 		});
 		function checkCache(id) {
 			if (localStorage.getItem(novel_id)) {
@@ -108,22 +135,25 @@ include_once('head.php');
 			$('.weui-article').find('h1').text(title);
 			$('.weui-article').find('section').html(content);
 		}
-		function getInfo(all) {
-			$.post('/ajax/chapter-list', {'id': novel_id, 'p': p}, function(result) {
+		function getInfo(cid) {
+			$('#cache-info').show();
+			$('.weui-tabbar').hide();
+			$.post('/ajax/chapter-list', {'nid': novel_id, 'id': cid, 'limit': 0, 'p': 1}, function(result) {
+				$('#cache-info').hide();
+				$('.weui-tabbar').show();
 				if (result.code == 1000) {
 					var info = result.info, isOut = false;
 					for (var i in info) {
 						chapter[info[i].id] = {'title': info[i].title, 'content': info[i].content};
-						if (!all && (info[i].id == chapter_id)) {
-							isOut = true;
-							break;
-						}
 					}
-					if (!isOut) {
-						p++;
-						getInfo(all);
+					if (length > JSON.stringify(chapter).length) {
+						localStorage.setItem(novel_id, JSON.stringify(chapter));
+						send('数据缓存成功');
+					} else {
+						alert('缓存失败，超出本地存储限额!');
 					}
-					localStorage.setItem(novel_id, JSON.stringify(chapter));
+				} else {
+					alert('数据获取失败');
 				}
 			}, 'json');
 		}

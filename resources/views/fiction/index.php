@@ -6,7 +6,7 @@ $page = array(
 include_once('head.php');
 ?>
 <div class="page__hd">
-	<h1 class="page__title">List</h1>
+	<h1 class="page__title"><img src="<?php echo IMG_PATH;?>Cloud.png" height="21px" /></h1>
 	<p class="page__desc">小说列表</p>
 </div>
 <div class="weui-panel__bd" style="margin-bottom: 60px;">

@@ -115,7 +115,8 @@ class AjaxController extends Controller {
 	 * @version 17.1.22
 	 */
 	public function postChapterList() {
-		$list = $this->chapter->getList($this->post['id'], 'sort', 'desc', 10, ($this->post['p'] - 1) * 10);
+		$limit = isset($this->post['limit']) ? $this->post['limit'] : 10;
+		$list = $this->chapter->getList($this->post['nid'], 'sort', 'desc', $limit, ($this->post['p'] - 1) * $limit,$this->post['id']);
 		foreach ($list as $key => $val) {
 			$list[$key]->link = base64_encode($val->link);
 		}

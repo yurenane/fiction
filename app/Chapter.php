@@ -11,29 +11,19 @@ class Chapter extends Model {
 	protected $table = 'chapter';
 
 	/**
-	 * 获取小说列表，根据小说ID
+	 * 获取小说章节，根据小说ID
 	 * ======
 	 * @author 简强
 	 * @version 17.1.20
 	 */
-	public function getList($id, $orderByField, $orderByInfo, $limit = 10, $skip = 0) {
-		if ($limit) {
-			$resutl = self::whereRaw('nid = ?', [$id])
-				->orderBy($orderByField, $orderByInfo)
-				->skip($skip)
-				->take($limit)
-				->get();
+	public function getList($nid, $orderByField, $orderByInfo, $limit = 10, $skip = 0, $id = '') {
+		if (!$limit) {
+			return DB::table('chapter')->where('nid', $nid)->where('id', '>', $id)->orderBy($orderByField, $orderByInfo)->get();
+		} elseif ($limit == 1) {
+			return DB::table('chapter')->where('nid', $nid)->orderBy($orderByField, $orderByInfo)->skip($skip)->take($limit)->first();
 		} else {
-			$resutl = self::whereRaw('nid = ?', [$id])
-				->orderBy($orderByField, $orderByInfo)
-				->get();
+			return DB::table('chapter')->where('nid', $nid)->orderBy($orderByField, $orderByInfo)->skip($skip)->take($limit)->get();
 		}
-
-		$info = array();
-		foreach ($resutl as $val) {
-			$info[] = (Object) $val->original;
-		}
-		return $limit == 1 ? $info[0] : $info;
 	}
 
 	/**
