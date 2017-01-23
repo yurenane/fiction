@@ -16,7 +16,7 @@ include_once('head.php');
 		<div class="weui-footer" style="margin-bottom: 60px;">
 	<!--			<p class="weui-footer__links">
 				<a href="javascript:;" class="weui-footer__link" id="on">上一章</a>
-				<a href="/novel/<?php //echo $info->list;          ?>/<?php //echo $info->link;          ?>/" class="weui-footer__link" id="list">目录</a>
+				<a href="/novel/<?php //echo $info->list;            ?>/<?php //echo $info->link;            ?>/" class="weui-footer__link" id="list">目录</a>
 				<a href="javascript:;" class="weui-footer__link" id="next">下一章</a>
 				<a href="javascript:;" class="weui-footer__link" id="cache" >缓存</a>
 			</p>-->
@@ -146,12 +146,16 @@ include_once('head.php');
 					for (var i in info) {
 						chapter[info[i].id] = {'title': info[i].title, 'content': info[i].content};
 					}
-					if (length > JSON.stringify(chapter).length) {
+					try {
 						localStorage.setItem(novel_id, JSON.stringify(chapter));
-						send('数据缓存成功');
-					} else {
-						alert('缓存失败，超出本地存储限额!');
+					} catch (oException) {
+						console.log(oException);
+						if (oException.name == 'QuotaExceededError') {
+							alert('超出本地存储限额！');
+							return false;
+						}
 					}
+					send('数据缓存成功');
 				} else {
 					alert('数据获取失败');
 				}

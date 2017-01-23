@@ -119,7 +119,7 @@ include_once('head.php');
 				</div><div class="weui-media-box__bd"><h4 class="weui-media-box__title">' + content[i].name + '<span class="weui-badge" style="margin-left: 5px;display:none;">更新</span></h4><p class="weui-media-box__desc">' + content[i].title + '</p><ul class="weui-media-box__info">\n\
 				<li class="weui-media-box__info__meta" style="margin:0;">作者：' + content[i].author + '</li><li class="weui-media-box__info__meta" style="margin:0;">更新时间：' + content[i].utime + '</li>\n\
 				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" style="margin:0;" id="new-' + content[i].id + '">' + (content[i].new ? '最新章节：' + content[i].new : '更新状态：' + content[i].status) + '</li></ul></div></a>\n\
-				</div><div class="weui-panel__ft"><a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link" rel="' + content[i].id + '"><div class="weui-cell__bd">查看更多</div><span class="weui-cell__ft"></span></a></div></div>';
+				</div><div class="weui-panel__ft"><a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link" rel="' + content[i].id + '"><div class="weui-cell__bd">查看更多'+(localStorage.getItem(content[i].id)?'<span style="font-size:12px;">(已缓存)</span>':'')+'</div><span class="weui-cell__ft"></span></a></div></div>';
 			}
 			$('#list').append(html);
 		}

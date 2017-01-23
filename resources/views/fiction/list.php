@@ -90,7 +90,7 @@ include_once('head.php');
 				return false;
 			}
 			isWork=true;
-			$.post('/ajax/chapter-list', {'id': id, 'p': p}, function(result) {
+			$.post('/ajax/chapter-list', {'nid': id, 'p': p}, function(result) {
 				$('.weui-loadmore').hide();
 				if (result.code == 1000) {
 					p++;
