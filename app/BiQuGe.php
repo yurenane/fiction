@@ -43,12 +43,12 @@ class BiQuGe {
 	 * @version 17.1.12
 	 */
 	public static function search($title) {
-		$curl = new Curl();
-		$curl->setReferer(self::$url[self::$id]);
-		$curl->setHeader(array('Host:www.baidu.com'));
+//		$curl = new Curl();
+//		$curl->setReferer(self::$url[self::$id]);
+//		$curl->setHeader(array('Host:www.baidu.com'));
 		$url = in_array(self::$id, array(3, 5)) ? self::$url[self::$id] . '/modules/article/search.php?searchkey=' . urlencode($title) : 'http://zhannei.baidu.com/cse/search?q=' . urlencode($title) . '&p=0&s=' . self::$s[self::$id];
-		$content = $curl->get($url);
-		phpQuery::newDocumentHTML($content);
+//		$content = $curl->get($url);
+		phpQuery::newDocumentFile($url);
 		$info = array();
 		if (in_array(self::$id, array(3, 5))) {
 			$list = pq('.grid tr');
@@ -104,11 +104,11 @@ class BiQuGe {
 	public static function getList($url) {
 		$_url = explode('/', $url);
 		$host = $_url[2];
-		$curl = new Curl();
-		$curl->setReferer('http://' . $host);
-		$curl->setHeader(array('Host:' . $host));
-		$content = $curl->get($url);
-		phpQuery::newDocumentHTML($content);
+//		$curl = new Curl();
+//		$curl->setReferer('http://' . $host);
+//		$curl->setHeader(array('Host:' . $host));
+//		$content = $curl->get($url);
+		phpQuery::newDocumentFile($url);
 		$novel = array('info' => array(), 'list' => array());
 		$author = pq('#info p')->eq(0)->text();
 		$type = pq('.con_top')->text();
@@ -170,11 +170,12 @@ class BiQuGe {
 	public static function update($url, $chapter) {
 		$_url = explode('/', $url);
 		$host = $_url[2];
-		$curl = new Curl();
-		$curl->setReferer('http://' . $host);
-		$curl->setHeader(array('Host:' . $host));
-		$content = $curl->get($url);
-		phpQuery::newDocumentHTML($content);
+//		PrintCss::n(array($url,$chapter));
+//		$curl = new Curl();
+//		$curl->setReferer('http://' . $host);
+//		$curl->setHeader(array('Host:' . $host));
+//		$content = $curl->get($url);
+		phpQuery::newDocumentFile($url);
 		$list = pq('#list dl dd');
 		$start = false;
 		$info = array();

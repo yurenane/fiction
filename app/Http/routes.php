@@ -16,15 +16,14 @@ use Illuminate\Http\Request;
 use App\PrintCss;
 //use phpQuery;
 use App\Curl;
+use App\Novel;
+use App\Chapter;
 
-//Route::get('/', function() {
-//		echo 1;
-//		phpQuery::newDocumentFile('http://job.blueidea.com');
-//		$companies = pq('#hotcoms .coms')->find('div');
-//		print_r($companies);
-//		exit;
-//		return view('welcome', ['msg' => 'xxx']);
-//	});
+Route::get('/test', function() {
+//		$content=phpQuery::newDocumentFile('http://www.jianqiang.win');
+		$chapter = new Chapter;
+		PrintCss::r($chapter->getList('587c43043ac79'));
+	});
 Route::get('/weui', function() {
 		return view('weui');
 	});
@@ -66,10 +65,7 @@ Route::get('/car', function() {
 //===========
 Route::group(['middleware' => ['login']], function() {
 		Route::get('/', function() {
-				$info = DB::table('novel')
-					->orderBy('utime', 'desc')
-					->get();
-				return view('fiction.index', ['info' => $info]);
+				return view('fiction.index');
 			});
 		Route::get('/search', function() {
 				return view('fiction.search');
@@ -79,13 +75,9 @@ Route::group(['middleware' => ['login']], function() {
 				$user_info = DB::table('user')
 					->where('id', $user_info->id)
 					->first();
-				$novel_info = array();
-				if ($user_info->nlist) {
-					$novel_info = DB::table('novel')
-						->whereIn('id', explode(',', $user_info->nlist))
-						->get();
-				}
-				return view('fiction.user', ['info' => $novel_info])->with('user_name', $user_info->name);
+				return view('fiction.user', array(
+				  'info' => $user_info,
+				));
 			});
 		Route::get('/login', function() {
 				return view('fiction.login');
@@ -119,7 +111,7 @@ Route::group(['middleware' => ['login']], function() {
 				echo json_encode(array('code' => 1000, 'info' => '注册成功'));
 			});
 		Route::controller('search', 'SearchController');
-		Route::controller('/novel/{name}/{link}/{jump}', 'NovelController');
+		Route::controller('/novel/{name}/{link}', 'NovelController');
 		Route::controller('ajax', 'AjaxController');
 	});
 

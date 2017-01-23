@@ -9,5 +9,5 @@
 		<script src="<?php echo JS_PATH; ?>jquery-1.8.3.min.js"></script>
 	</head>
 	<body ontouchstart="">
-		<div class="container" id="container">
-			<div class="page home js_show">
+		<div class="container" id="container" style="position:static;">
+			<div class="page home js_show" style="position:static;">

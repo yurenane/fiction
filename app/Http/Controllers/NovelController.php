@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\PrintCss;
 use App\BiQuGe;
+use App\Novel;
+use App\Chapter;
+use App\ReadLog;
+use App\Crawl;
 
 /**
  * 小说数据处理类
@@ -15,30 +19,41 @@ use App\BiQuGe;
  */
 class NovelController extends Controller {
 
+	private $novel = '';
+	private $chapter = '';
+	private $read_log = '';
+	private $crawl = '';
+
+	function __construct() {
+		$this->novel = new Novel;
+		$this->chapter = new Chapter;
+		$this->read_log = new ReadLog;
+		$this->crawl = new Crawl;
+	}
+
 	/**
 	 * 小说列表
 	 * ======
 	 * @author 简强
 	 * @version 17.1.12
 	 */
-	public function getIndex($name, $link, $jump = true) {
-		$result = $this->getNovelInfo($name);
+	public function getIndex($name, $link) {
+		$result = $this->novel->getInfo($name);
 		if (!$result && $link) {
-			$this->getList(base64_decode($link)); //小说搜索并入库
-			$result = $this->getNovelInfo($name); //再次拿取数据
+			$this->crawl->getList(base64_decode($link)); //小说搜索并入库
+			$result = $this->novel->getInfo($name); //再次拿取数据
 		}
-		$this->updateList($result->id, $link); //更新列表
+//		$this->updateList($result->id, $link); //更新列表
 		//查看是否存在阅读记录
-		$read = $this->getReadLog($result->id);
-//		PrintCss::r($server);
-		if ($read && $jump) {
-			return $this->getDetail($read->cid, $link);
-			exit;
-		}
+//		$read = $this->read_log->getLog($result->id);
+//		if ($read && $jump) {
+//			return $this->getDetail($read->cid, $link);
+//			exit;
+//		}
 		return view('fiction.list', ['info' => array(
 			'info' => $result,
 			'link' => $link,
-			'list' => $this->getNovelList($result->id),
+			'list' => $this->chapter->getList($result->id, 'sort', 'desc'),
 		)]);
 	}
 
@@ -49,184 +64,27 @@ class NovelController extends Controller {
 	 * @version 17.1.12
 	 */
 	public function getDetail($id, $link) {
-		$result = $this->getChapter($id);
+		$result = $this->chapter->getInfo($id);
 		$_id = explode('_', $id);
 		if (!$result) {
 			return $this->getIndex($_id[1], $link, false);
 			exit;
 		}
 		if (!$result->content) {
-			$this->_getDetail($result->link, $id); //小说内容搜索并入库
-			$result = $this->getChapter($id); //再次获取数据
+			$this->crawl->getDetail($result->link, $id); //小说内容搜索并入库
+			$result = $this->chapter->getInfo($id); //再次获取数据
 		}
 		$this->updateRead($_id[1], $id); //更新阅读记录
-		$result->on = '/novel/' . $this->_id((int) $_id[0] - 1) . '_' . $_id[1] . '/' . $link . '/1/detail';
-		$result->list = '/novel/' . $_id[1] . '/' . $link . '/0';
-		$result->next = '/novel/' . $this->_id((int) $_id[0] + 1) . '_' . $_id[1] . '/' . $link . '/1/detail';
+		$result->on = $this->_id((int) $_id[0] - 1) . '_' . $_id[1];
+		$result->link = $link;
+		$result->list = $_id[1];
+		$result->next = $this->_id((int) $_id[0] + 1) . '_' . $_id[1];
+		$result->chapter_id=$id;
+		$result->novel_id=$_id[1];
 //		PrintCss::r($result);
 		return view('fiction.detail', ['info' => $result]);
 	}
 
-	/**
-	 * 数据采集，小说列表
-	 * ======
-	 * @author 简强
-	 * @version 17.1.12
-	 */
-	private function getList($url) {
-		return $this->addList(BiQuGe::getList($url)); //笔趣阁
-	}
-
-	/**
-	 * 数据采集，小说详情
-	 * ======
-	 * @author 简强
-	 * @version 17.1.12
-	 */
-	private function _getDetail($url, $id) {
-		$info = BiQuGe::getdetail($url); //笔趣阁
-		return $this->addDetail($id, $info['content']);
-	}
-
-	/**
-	 * 获取小说列表
-	 * ======
-	 * @author 简强
-	 * @version 17.1.13
-	 */
-	private function getNovelList($id) {
-		return DB::table('chapter')
-				->select('id', 'nid', 'link', 'title')
-				->where('nid', $id)
-				->orderBy('sort', 'desc')
-				->get();
-	}
-
-	/**
-	 * 获取小说信息
-	 * ======
-	 * @author 简强
-	 * @version 17.1.16
-	 */
-	private function getNovelInfo($name) {
-		return DB::table('novel')
-//				->select('id', 'name', 'title','author','cover','type','new','utime','status')
-				->where('name', $name)
-				->orWhere('id', $name)
-				->first();
-	}
-
-	/**
-	 * 获取章节信息
-	 * ======
-	 * @author 简强
-	 * @version 17.1.16
-	 */
-	private function getChapter($id) {
-		return DB::table('chapter')
-				->where('id', $id)
-				->first();
-	}
-
-	/**
-	 * 获取阅读记录
-	 * ======
-	 * @author 简强
-	 * @version 17.1.19
-	 */
-	private function getReadLog($nid) {
-		return DB::table('read_log')
-				->where('nid', $nid)
-				->first();
-	}
-
-	/**
-	 * 插入列表数据
-	 * ======
-	 * @author 简强
-	 * @version 17.1.13
-	 */
-	private function addList($content) {
-		$id = '';
-		if ($content['list']) {
-			$id = uniqid();
-			//保存封面图片
-			file_put_contents(ROOT . '/statics/images/fiction/' . $id . '.jpg', file_get_contents($content['info']['cover']));
-			DB::table('novel')->insert([
-			  'id' => $id,
-			  'name' => $content['info']['name'],
-			  'title' => $content['info']['title'],
-			  'cover' => $content['info']['cover'],
-			  'author' => $content['info']['author'],
-			  'type' => $content['info']['type'],
-			  'utime' => strtotime($content['info']['utime']),
-			  'new' => $content['info']['new'],
-			  'link' => $content['info']['link'],
-			]);
-			$insert = array();
-			$num = 0;
-			foreach ($content['list'] as $val) {
-				$insert[] = array(
-				  'id' => $this->_id($num) . '_' . $id,
-				  "nid" => $id,
-				  "link" => $val['link'],
-				  "title" => $val['title'],
-				  'sort' => $num,
-				);
-				$num++;
-			}
-//				PrintCss::n(array($insert));
-			DB::table('chapter')->insert($insert);
-		}
-		return $id;
-	}
-
-	/**
-	 * 插入详情数据
-	 * ======
-	 * @author 简强
-	 * @version 17.1.16
-	 */
-	private function addDetail($id, $content) {
-		if ($id && $content) {
-			DB::table('chapter')
-				->where('id', $id)
-				->update(['content' => $content]);
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 更新数据
-	 * ======
-	 * @author 简强
-	 * @version 17.1.19
-	 */
-	private function updateList($id, $link) {
-		$info = DB::table('chapter')
-			->where('nid', $id)
-			->orderBy('id', 'desc')
-			->first();
-		$result = BiQuGe::update(base64_decode($link), $info);
-		if ($result) {
-			$_id = explode('_', $info->id);
-			$num = (int) $_id[0];
-			$insert = array();
-			foreach ($result as $val) {
-				$num++;
-				$insert[] = array(
-				  'id' => $this->_id($num) . '_' . $id,
-				  "nid" => $id,
-				  "link" => $val['link'],
-				  "title" => $val['title'],
-				  'sort' => $num,
-				);
-			}
-			DB::table('chapter')->insert($insert);
-		}
-		return true;
-	}
 
 	/**
 	 * 更新阅读记录
@@ -235,7 +93,7 @@ class NovelController extends Controller {
 	 * @version 17.1.19
 	 */
 	private function updateRead($nid, $cid) {
-		if ($this->getReadLog($nid)) {
+		if ($this->read_log->getLog($nid)) {
 			DB::table('read_log')
 				->where('nid', $nid)
 				->update(['cid' => $cid]);

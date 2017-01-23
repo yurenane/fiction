@@ -5,6 +5,13 @@
 		<p class="weui-toast__content" >添加成功</p>
 	</div>
 </div>
+<div id="loading" style="opacity: 0; display: none;">
+	<div class="weui-mask_transparent"></div>
+	<div class="weui-toast">
+		<i class="weui-loading weui-icon_toast"></i>
+		<p class="weui-toast__content">数据加载中</p>
+	</div>
+</div>
 <?php if (!in_array($page['id'], array('login', 'register'))) { ?>
 	<div class="weui-tabbar" style="position:fixed;">
 		<a href="/" class="weui-tabbar__item <?php echo $page['id'] == 'index' ? ' weui-bar__item_on' : ''; ?>">
@@ -37,6 +44,9 @@
 		setTimeout(function() {
 			$('#toast').hide().css('opacity', 0);
 		}, 2000);
+	}
+	function loading(show) {
+		show ? $('#loading').show().css('opacity', 1) : $('#loading').hide().css('opacity', 0);
 	}
 </script>
 </body>

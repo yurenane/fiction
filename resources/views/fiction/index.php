@@ -1,6 +1,6 @@
 <?php
-$page=array(
-  'id'=>'index',
+$page = array(
+  'id' => 'index',
 );
 
 include_once('head.php');
@@ -10,26 +10,75 @@ include_once('head.php');
 	<p class="page__desc">小说列表</p>
 </div>
 <div class="weui-panel__bd" style="margin-bottom: 60px;">
-	<?php if($info){
-		foreach ($info as $val){?>
-	<a href="/novel/<?php echo $val->name; ?>/<?php echo base64_encode($val->link); ?>/1" class="weui-media-box weui-media-box_appmsg">
-		<div class="weui-media-box__hd" style="width:auto;height:auto;">
-			<img style="width:100px;height:125px;" class="weui-media-box__thumb" src="<?php echo IMG_PATH.'fiction/'. $val->id.'.jpg' ?>" alt="">
-		</div>
-		<div class="weui-media-box__bd">
-			<h4 class="weui-media-box__title"><?php echo  $val->name; ?></h4>
-			<p class="weui-media-box__desc"><?php echo  $val->title; ?></p>
-			<ul class="weui-media-box__info">
-				<li class="weui-media-box__info__meta" style="margin:0;">作者：<?php echo $val->author; ?></li>
-				<li class="weui-media-box__info__meta" style="margin:0;">更新时间：<?php echo  date('Y-m-d',$val->utime); ?></li>
-				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" style="margin:0;"><?php echo $val->new?'最新章节：'. $val->new:'更新状态：'. $val->status; ?></li>
-			</ul>
-		</div>
-	</a>
-		<?php } }else{?>
-	<div class="weui-loadmore weui-loadmore_line">
-            <span class="weui-loadmore__tips">暂无数据</span>
-         </div>
-	<?php }?>
+	<div id="list">
+
+	</div>
+	<div class="weui-loadmore" style='margin-bottom: 80px;display:none;'>
+		<i class="weui-loading"></i>
+		<span class="weui-loadmore__tips">正在加载</span>
+	</div>
 </div>
+<script>
+	$(function() {
+		var p = 1, isOk = false, isWork = false, img = '<?php echo IMG_PATH; ?>';
+		getList();
+		$(window).scroll(function() {
+			viewH = $(this).height();
+			contentH = $(document).height();
+			scrollTop = $(this).scrollTop();
+			if (contentH && (contentH - viewH - scrollTop <= 200)) {
+				getList();
+			}
+		});
+		function getList() {
+			if (isOk) {
+				return false;
+			}
+			$('.weui-loadmore').show();
+			if (isWork) {
+				return false;
+			}
+			isWork = true;
+			$.post('/ajax/novel-list', {'p': p}, function(result) {
+				$('.weui-loadmore').hide();
+				if (result.code == 1000) {
+					p++;
+					setHtml(result.info);
+				} else {
+					if (!$('#list').html()) {
+						$('#list').html('<div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div>');
+					} else {
+						send('已经没有数据了');
+					}
+					isOk = true;
+				}
+				isWork = false;
+			}, 'json');
+		}
+		function setHtml(content) {
+			var html = '';
+			for (var i in content) {
+				html += '<a href="/novel/' + content[i].id + '/' + content[i].link + '" id="'+ content[i].id +'" data-url="'+ content[i].link+'" class="weui-media-box weui-media-box_appmsg"><div class="weui-media-box__hd" style="width:auto;height:auto;">\n\
+				<img style="width:60px;height:85px;" class="weui-media-box__thumb" src="' + img + 'fiction/' + content[i].id + '.jpg" alt=""></div><div class="weui-media-box__bd">\n\
+				<h4 class="weui-media-box__title">' + content[i].name + '</h4><p class="weui-media-box__desc">' + content[i].title + '</p><ul class="weui-media-box__info">\n\
+				<li class="weui-media-box__info__meta" style="margin:0;">作者：' + content[i].author + '</li><li class="weui-media-box__info__meta" style="margin:0;">更新时间：' + content[i].utime + '</li>\n\
+				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" style="margin:0;">' + (content[i].new ? '最新章节：' + content[i].new : '更新状态：' + content[i].status) + '</li></ul></div></a>';
+			}
+			$('#list').append(html);
+		}
+		$('#list a').each(function() {
+			getNew($(this).attr('id'), $(this).attr('data-url'));
+		});
+		function getNew(id, link) {
+			$.post('ajax/update-list', {'id': id, 'link': link}, function(result) {
+				if (result.code == 1000) {
+					$('#new-' + id).text('最新章节：' + result.info);
+					$('#' + id).find('.weui-media-box__title span').show();
+				} else {
+
+				}
+			}, 'json');
+		}
+	})
+</script>
 <?php include_once('footer.php'); ?>
