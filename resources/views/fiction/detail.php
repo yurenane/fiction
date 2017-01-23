@@ -63,7 +63,7 @@ include_once('head.php');
 		<p class="weui-tabbar__label">上一章</p>
 	</a>
 	<a href="/novel/<?php echo $info->list; ?>/<?php echo $info->link; ?>/" class="weui-tabbar__item ">
-		<img src="<?php echo IMG_PATH; ?>Adjustments.png" alt="" class="weui-tabbar__icon">
+		<img src="<?php echo IMG_PATH; ?>adjustments.png" alt="" class="weui-tabbar__icon">
 		<p class="weui-tabbar__label">目录</p>
 	</a>
 	<a href="javascript:;" class="weui-tabbar__item" id="next">
@@ -71,7 +71,7 @@ include_once('head.php');
 		<p class="weui-tabbar__label">下一章</p>
 	</a>
 	<a href="javascript:;" class="weui-tabbar__item" id="cache">
-		<img src="<?php echo IMG_PATH; ?>Lightbulb.png" alt="" class="weui-tabbar__icon">
+		<img src="<?php echo IMG_PATH; ?>lightbulb.png" alt="" class="weui-tabbar__icon">
 		<p class="weui-tabbar__label">缓存</p>
 	</a>
 </div>

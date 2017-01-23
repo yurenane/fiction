@@ -15,11 +15,11 @@
 <?php if (!in_array($page['id'], array('login', 'register','detail'))) { ?>
 	<div class="weui-tabbar" style="position:fixed;">
 		<a href="/" class="weui-tabbar__item <?php echo $page['id'] == 'index' ? ' weui-bar__item_on' : ''; ?>">
-			<img src="<?php echo IMG_PATH; ?>Notebook.png" alt="" class="weui-tabbar__icon">
+			<img src="<?php echo IMG_PATH; ?>notebook.png" alt="" class="weui-tabbar__icon">
 			<p class="weui-tabbar__label">首页</p>
 		</a>
 		<a href="/search" class="weui-tabbar__item <?php echo $page['id'] == 'search' ? ' weui-bar__item_on' : ''; ?>">
-			<img src="<?php echo IMG_PATH; ?>Global.png" alt="" class="weui-tabbar__icon">
+			<img src="<?php echo IMG_PATH; ?>global.png" alt="" class="weui-tabbar__icon">
 			<p class="weui-tabbar__label">搜索</p>
 		</a>
 		<a href="/user" class="weui-tabbar__item <?php echo $page['id'] == 'user' ? ' weui-bar__item_on' : ''; ?>">
