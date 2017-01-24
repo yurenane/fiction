@@ -82,7 +82,6 @@ include_once('head.php');
 				link = '<?php echo $info->link; ?>',
 				chapter_id = '<?php echo $info->chapter_id; ?>',
 				novel_id = '<?php echo $info->novel_id; ?>',
-				length = JSON.stringify(localStorage).length,
 				chapter = {};
 		$('.weui-tabbar__item').on('click', function() {
 			$(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
@@ -151,7 +150,7 @@ include_once('head.php');
 					} catch (oException) {
 						console.log(oException);
 						if (oException.name == 'QuotaExceededError') {
-							alert('超出本地存储限额！');
+							alert('数据获取失败，超出本地存储限额！');
 							return false;
 						}
 					}
