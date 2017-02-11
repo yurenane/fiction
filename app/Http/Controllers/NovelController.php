@@ -43,6 +43,7 @@ class NovelController extends Controller {
 			$this->crawl->getList(base64_decode($link)); //小说搜索并入库
 			$result = $this->novel->getInfo($name); //再次拿取数据
 		}
+//		PrintCss::r(array($result,$link));
 //		$this->updateList($result->id, $link); //更新列表
 		//查看是否存在阅读记录
 //		$read = $this->read_log->getLog($result->id);

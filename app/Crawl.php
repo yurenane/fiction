@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\PrintCss;
 use App\Chapter;
 use App\BiQuGe;
+use App\Curl;
 
 class Crawl {
 
@@ -74,11 +75,12 @@ class Crawl {
 	 * @version 17.1.13
 	 */
 	private function addList($content) {
+		$curl = new Curl();
 		$id = '';
 		if ($content['list']) {
 			$id = uniqid();
 			//保存封面图片
-			file_put_contents(ROOT . '/statics/images/fiction/' . $id . '.jpg', file_get_contents($content['info']['cover']));
+			file_put_contents(ROOT . '/statics/images/fiction/' . $id . '.jpg', $curl->get($content['info']['cover']));
 			DB::table('novel')->insert([
 			  'id' => $id,
 			  'name' => $content['info']['name'],

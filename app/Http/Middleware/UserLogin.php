@@ -14,7 +14,7 @@ class UserLogin {
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next) {
-		if (!$request->session()->has('user') && !in_array($request->path(), array('login', 'register'))) {
+		if (!$request->session()->has('user') && !in_array($request->path(), array('login'))) {
 			return redirect('login');
 		}
 		return $next($request);

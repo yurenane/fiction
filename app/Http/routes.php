@@ -18,11 +18,13 @@ use App\PrintCss;
 use App\Curl;
 use App\Novel;
 use App\Chapter;
+use App\Video;
 
 Route::get('/test', function() {
 //		$content=phpQuery::newDocumentFile('http://www.jianqiang.win');
-		$chapter = new Chapter;
-		PrintCss::r($chapter->getList('587c43043ac79'));
+//		var_dump(file_put_contents('1.mp4', file_get_contents('http://mvvideo1.meitudata.com/58866171a65918300.mp4')));
+	return false;
+		return view('test');
 	});
 Route::get('/weui', function() {
 		return view('weui');
@@ -113,5 +115,11 @@ Route::group(['middleware' => ['login']], function() {
 		Route::controller('search', 'SearchController');
 		Route::controller('/novel/{name}/{link}', 'NovelController');
 		Route::controller('ajax', 'AjaxController');
+	});
+Route::get('/video', function() {
+	return false;
+	$video=new Video;
+	$video->getVideo();
+//		return view('test');
 	});
 

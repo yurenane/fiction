@@ -30,11 +30,6 @@ class BiQuGe {
 	  6 => '920895234054625192',
 	  7 => '17194782488582577862',
 	); //搜索ID
-	private static $id = 2;
-
-	function __construct() {
-		self::$id = rand(2, 6);
-	}
 
 	/**
 	 * 小说搜索
@@ -42,15 +37,15 @@ class BiQuGe {
 	 * @author 简强
 	 * @version 17.1.12
 	 */
+
 	public static function search($title) {
-//		$curl = new Curl();
-//		$curl->setReferer(self::$url[self::$id]);
-//		$curl->setHeader(array('Host:www.baidu.com'));
-		$url = in_array(self::$id, array(3, 5)) ? self::$url[self::$id] . '/modules/article/search.php?searchkey=' . urlencode($title) : 'http://zhannei.baidu.com/cse/search?q=' . urlencode($title) . '&p=0&s=' . self::$s[self::$id];
-//		$content = $curl->get($url);
-		phpQuery::newDocumentFile($url);
+		$id = rand(2, 6);
+		$curl = new Curl();
+		$url = in_array($id, array(3, 5)) ? self::$url[$id] . '/modules/article/search.php?searchkey=' . urlencode($title) : 'http://zhannei.baidu.com/cse/search?q=' . urlencode($title) . '&p=0&s=' . self::$s[$id];
+//		phpQuery::newDocumentFile($url);
+		phpQuery::newDocumentHTML(self::getHtml($url, self::$url[$id], array('Host:www.baidu.com')));
 		$info = array();
-		if (in_array(self::$id, array(3, 5))) {
+		if (in_array($id, array(3, 5))) {
 			$list = pq('.grid tr');
 			foreach ($list as $key => $val) {
 				if ($key) {
@@ -80,7 +75,7 @@ class BiQuGe {
 				  'name' => $name,
 				  '_name' => urlencode($name),
 				  '_img' => $img,
-				  'img' => 'data:image/jpg;base64,' . base64_encode(file_get_contents($img)),
+				  'img' => 'data:image/jpg;base64,' . base64_encode($curl->get($img)),
 				  'title' => self::clear(pq($val)->find('.result-game-item-desc')->text()),
 				  'author' => self::clear(pq($val)->find('.result-game-item-info p')->eq(0)->find('span')->eq(1)->text()),
 				  'type' => rtrim(pq($val)->find('.result-game-item-info p')->eq(1)->find('span')->eq(1)->text()),
@@ -104,11 +99,8 @@ class BiQuGe {
 	public static function getList($url) {
 		$_url = explode('/', $url);
 		$host = $_url[2];
-//		$curl = new Curl();
-//		$curl->setReferer('http://' . $host);
-//		$curl->setHeader(array('Host:' . $host));
-//		$content = $curl->get($url);
-		phpQuery::newDocumentFile($url);
+		phpQuery::newDocumentHTML(self::getHtml($url, 'http://' . $host, array('Host:' . $host)));
+//		phpQuery::newDocumentFile($url);
 		$novel = array('info' => array(), 'list' => array());
 		$author = pq('#info p')->eq(0)->text();
 		$type = pq('.con_top')->text();
@@ -125,18 +117,18 @@ class BiQuGe {
 		  'link' => $url,
 		);
 		$list = pq('#list dl dd');
-		$start = false;
+//		$start = false;
 		foreach ($list as $val) {
-			$title = pq($val)->find('a')->text();
-			if (strpos('*' . $title, '第一章')) {
-				$start = true;
-			}
-			if ($start) {
-				$novel['list'][] = array(
-				  'title' => $title,
-				  'link' => 'http://' . $host . pq($val)->find('a')->attr('href'),
-				);
-			}
+//			$title = pq($val)->find('a')->text();
+//			if (strpos('*' . $title, '第一章')) {
+//				$start = true;
+//			}
+//			if ($start) {
+			$novel['list'][] = array(
+			  'title' => pq($val)->find('a')->text(),
+			  'link' => 'http://' . $host . pq($val)->find('a')->attr('href'),
+			);
+//			}
 		}
 //		PrintCss::r($novel);
 		return $novel;
@@ -171,11 +163,8 @@ class BiQuGe {
 		$_url = explode('/', $url);
 		$host = $_url[2];
 //		PrintCss::n(array($url,$chapter));
-//		$curl = new Curl();
-//		$curl->setReferer('http://' . $host);
-//		$curl->setHeader(array('Host:' . $host));
-//		$content = $curl->get($url);
-		phpQuery::newDocumentFile($url);
+//		phpQuery::newDocumentFile($url);
+		phpQuery::newDocumentHTML(self::getHtml($url, 'http://' . $host, array('Host:' . $host)));
 		$list = pq('#list dl dd');
 		$start = false;
 		$info = array();
@@ -214,6 +203,18 @@ class BiQuGe {
 		$len = strlen($string) - strpos($string, $start) - strlen($start);
 		$len -=$end ? (strlen($string) - strpos($string, $end)) : 0;
 		return substr($string, (strpos($string, $start) + strlen($start)), $len);
+	}
+
+	private static function getHtml($url, $referer, $header) {
+		$curl = new Curl();
+		$referer ? $curl->setReferer($referer) : '';
+		$header ? $curl->setHeader($header) : '';
+		$content = $curl->get($url);
+		if ($content) {
+			return $content;
+		} else {
+			self::getHtml($url, $referer, $header);
+		}
 	}
 
 }

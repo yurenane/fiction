@@ -26,11 +26,11 @@ include_once('head.php');
 			</div>
 		</div>
 	</div>
-	<label for="weuiAgree" class="weui-agree">
+<!--	<label for="weuiAgree" class="weui-agree">
 		<span class="weui-agree__text">
 			前往<a href="/register">注册</a>
 		</span>
-	</label>
+	</label>-->
 	<div class="weui-btn-area">
 		<a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">登录</a>
 	</div>
