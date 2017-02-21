@@ -39,7 +39,8 @@ class BiQuGe {
 	 */
 
 	public static function search($title) {
-		$id = rand(2, 6);
+//		$id = rand(2, 6);
+		$id=2;
 		$curl = new Curl();
 		$url = in_array($id, array(3, 5)) ? self::$url[$id] . '/modules/article/search.php?searchkey=' . urlencode($title) : 'http://zhannei.baidu.com/cse/search?q=' . urlencode($title) . '&p=0&s=' . self::$s[$id];
 //		phpQuery::newDocumentFile($url);
@@ -141,15 +142,15 @@ class BiQuGe {
 	 * @version 17.1.16
 	 */
 	public static function getdetail($url) {
-//		$_url = explode('/', $url);
+		$_url = explode('/', $url);
 //		$host = str_replace('www', 'm', $_url[2]);
+		$host =$_url[2];
 //		$id=  explode('_', $_url[3]);
 //		$url='http://'.$host.'/wapbook/'.$id[1].'_'.$_url[4];   移动端站点
-		phpQuery::newDocumentFile($url);
-//		phpQuery::newDocumentHTML($content);
+//		phpQuery::newDocumentFile($url);
+		phpQuery::newDocumentHTML(self::getHtml($url, 'http://' . $host, array('Host:' . $host)));
 		$content = pq('#content')->text();
-		$content = str_replace(array("\r\n", "\r", "\n", ' '), '</p><p>', $content);
-//		PrintCss::r('<p>'.$content.'</p>');
+		$content = str_replace(array("\r\n", "\r", "\n", ' ','<br>'), '</p><p>', $content);
 		return array('title' => self::clear(pq('.bookname h1')->text()), 'content' => '<p>' . $content . '</p>');
 	}
 
@@ -213,7 +214,7 @@ class BiQuGe {
 		if ($content) {
 			return $content;
 		} else {
-			self::getHtml($url, $referer, $header);
+			return self::getHtml($url, $referer, $header);
 		}
 	}
 

@@ -24,7 +24,7 @@ include_once('head.php');
 		</form>
 		<a href="javascript:" class="weui-search-bar__cancel-btn" id="search">确认</a>
 	</div>
-	<div class="weui-cells searchbar-result weui-panel weui-panel__bd" id="searchList" style="display: none;">
+	<div class="weui-cells searchbar-result weui-panel weui-panel__bd" id="searchList" style="display: none;margin-bottom: 60px;">
 	</div>
 </div>
 <script type="text/javascript">
@@ -68,7 +68,7 @@ include_once('head.php');
 					setHtml(result.info);
 					$('#searchList').show();
 				} else {
-					alert(result.error);
+					send(false,result.error);
 				}
 			}, 'json');
 		});

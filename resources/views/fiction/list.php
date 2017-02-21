@@ -67,7 +67,7 @@ include_once('head.php');
 		$('#add').click(function() {
 			$.post('/ajax/collect', {'id': id}, function(result) {
 				if (result.code == 1000) {
-					send();
+					send(true);
 				} else {
 					alert(result.error);
 				}
@@ -97,7 +97,7 @@ include_once('head.php');
 					setHtml(result.info);
 				} else {
 					isOk = true;
-					send('已经没有数据了');
+					send(false,'已经没有数据了');
 				}
 				isWork=false;
 			}, 'json');

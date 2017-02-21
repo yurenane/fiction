@@ -76,6 +76,10 @@ class Crawl {
 	 */
 	private function addList($content) {
 		$curl = new Curl();
+		$_url = explode('/',  $content['info']['cover']);
+		$host = $_url[2];
+		$curl->setReferer('http://' . $host) ;
+		 $curl->setHeader(array('Host:' . $host));
 		$id = '';
 		if ($content['list']) {
 			$id = uniqid();

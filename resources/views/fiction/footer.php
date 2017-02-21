@@ -12,7 +12,7 @@
 		<p class="weui-toast__content">数据加载中</p>
 	</div>
 </div>
-<?php if (!in_array($page['id'], array('login', 'register','detail'))) { ?>
+<?php if (!in_array($page['id'], array('login', 'register', 'detail'))) { ?>
 	<div class="weui-tabbar" style="position:fixed;">
 		<a href="/" class="weui-tabbar__item <?php echo $page['id'] == 'index' ? ' weui-bar__item_on' : ''; ?>">
 			<img src="<?php echo IMG_PATH; ?>notebook.png" alt="" class="weui-tabbar__icon">
@@ -31,8 +31,11 @@
 <?php } ?>
 </div>
 <script>
-	function send(text) {
+	function send(status, text) {
 		text ? $('#toast .weui-toast__content').text(text) : '';
+		if (!status) {
+			$('#toast .weui-icon_toast').removeClass('weui-icon-success-no-circle').addClass('weui-icon-warn').css('font-size','55px');
+		}
 		$('#toast').show().css('opacity', 1);
 		setTimeout(function() {
 			$('#toast').hide().css('opacity', 0);

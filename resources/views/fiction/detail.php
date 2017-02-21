@@ -28,15 +28,13 @@ include_once('head.php');
 		<div class="weui-actionsheet" id="actionsheet">
 			<div class="weui-actionsheet__menu">
 				<div class="weui-actionsheet__cell" id="cache-next" >缓存后面章节</div>
-				<div class="weui-actionsheet__cell" id="cache-all" >缓存全本</div>
 			</div>
 			<div class="weui-actionsheet__action">
 				<div class="weui-actionsheet__cell" id="actionsheetCancel">取消</div>
 			</div>
 		</div>
 	</div>
-<?php } else {
-	?>
+<?php } else { ?>
 	<div class="weui-msg">
 		<div class="weui-msg__icon-area"><i class="weui-icon-warn weui-icon_msg"></i></div>
 		<div class="weui-msg__text-area">
@@ -109,15 +107,12 @@ include_once('head.php');
 			$('#mask').show().css('opacity', 1);
 			$('#actionsheet').addClass('weui-actionsheet_toggle');
 		});
-		$('#actionsheetCancel,#mask,#cache-next,#cache-all').click(function() {
+		$('#actionsheetCancel,#mask,#cache-next').click(function() {
 			$('#mask').hide().css('opacity', 0);
 			$('#actionsheet').removeClass('weui-actionsheet_toggle');
 		});
 		$('#cache-next').click(function() {
 			getInfo(chapter_id);
-		});
-		$('#cache-all').click(function() {
-			getInfo('');
 		});
 		function checkCache(id) {
 			if (localStorage.getItem(novel_id)) {
@@ -137,7 +132,7 @@ include_once('head.php');
 		function getInfo(cid) {
 			$('#cache-info').show();
 			$('.weui-tabbar').hide();
-			$.post('/ajax/chapter-list', {'nid': novel_id, 'id': cid, 'limit': 0, 'p': 1}, function(result) {
+			$.post('/ajax/chapter-list', {'nid': novel_id, 'id': cid, 'limit': 500, 'p': 1}, function(result) {
 				$('#cache-info').hide();
 				$('.weui-tabbar').show();
 				if (result.code == 1000) {
@@ -150,13 +145,13 @@ include_once('head.php');
 					} catch (oException) {
 						console.log(oException);
 						if (oException.name == 'QuotaExceededError') {
-							alert('数据获取失败，超出本地存储限额！');
+							send(false,'数据获取失败，超出本地存储限额！');
 							return false;
 						}
 					}
-					send('数据缓存成功');
+					send(true,'数据缓存成功');
 				} else {
-					alert('数据获取失败');
+					send(false,'数据获取失败');
 				}
 			}, 'json');
 		}
