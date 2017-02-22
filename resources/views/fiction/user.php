@@ -104,7 +104,7 @@ include_once('head.php');
 					if (!$('#list').html()) {
 						$('#list').html('<div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div>');
 					} else {
-						send(false,'已经没有数据了');
+						// send(false,'已经没有数据了');
 					}
 					isOk = true;
 				}
