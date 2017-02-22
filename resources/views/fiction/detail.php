@@ -27,7 +27,7 @@ include_once('head.php');
 		<div class="weui-mask" id="mask" style="opacity: 0; display: none;"></div>
 		<div class="weui-actionsheet" id="actionsheet">
 			<div class="weui-actionsheet__menu">
-				<div class="weui-actionsheet__cell" id="cache-next" >缓存后面1000章节</div>
+				<div class="weui-actionsheet__cell" id="cache-next" >缓存后面500章节</div>
 			</div>
 			<div class="weui-actionsheet__action">
 				<div class="weui-actionsheet__cell" id="actionsheetCancel">取消</div>
@@ -132,7 +132,7 @@ include_once('head.php');
 		function getInfo(cid) {
 			$('#cache-info').show();
 			$('.weui-tabbar').hide();
-			$.post('/ajax/chapter-list', {'nid': novel_id, 'id': cid, 'limit': 1000, 'p': 1}, function(result) {
+			$.post('/ajax/chapter-list', {'nid': novel_id, 'id': cid, 'limit': 500, 'p': 1}, function(result) {
 				$('#cache-info').hide();
 				$('.weui-tabbar').show();
 				if (result.code == 1000) {
