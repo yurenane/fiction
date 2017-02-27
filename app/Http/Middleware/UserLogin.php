@@ -15,7 +15,7 @@ class UserLogin {
 	 */
 	public function handle($request, Closure $next) {
 		if (!$request->session()->has('user') && !in_array($request->path(), array('login'))) {
-			if($isset($_COOKIE['user'])){
+			if(isset($_COOKIE['user'])){
 				$info = DB::table('user')
 					->where('id', $_COOKIE['user'])
 					->first();
