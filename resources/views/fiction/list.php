@@ -102,7 +102,7 @@ include_once('head.php');
 			viewH = $(this).height();
 			contentH = $(document).height();
 			scrollTop = $(this).scrollTop();
-			if (contentH && (contentH - viewH - scrollTop <= 200)) {
+			if (contentH && (contentH - viewH - scrollTop <= 500)) {
 				getList();
 			}
 		});
@@ -115,7 +115,7 @@ include_once('head.php');
 				return false;
 			}
 			isWork=true;
-			$.post('/ajax/chapter-list', {'nid': id, 'p': p,'limit':20,'sort':sort}, function(result) {
+			$.post('/ajax/chapter-list', {'nid': id, 'p': p,'limit':100,'sort':sort}, function(result) {
 				$('.weui-loadmore').hide();
 				if (result.code == 1000) {
 					p++;
