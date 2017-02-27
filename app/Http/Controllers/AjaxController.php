@@ -117,7 +117,8 @@ class AjaxController extends Controller {
 	public function postChapterList() {
 		$limit = isset($this->post['limit']) ? $this->post['limit'] : 10;
 		$id = isset($this->post['id']) ? $this->post['id'] : '';
-		$list = $this->chapter->getList($this->post['nid'], 'sort', 'desc', $limit, ($this->post['p'] - 1) * $limit, $id);
+		$sort = isset($this->post['sort']) ? $this->post['sort'] : 'desc';
+		$list = $this->chapter->getList($this->post['nid'], 'sort', $sort, $limit, ($this->post['p'] - 1) * $limit, $id);
 		foreach ($list as $key => $val) {
 			$list[$key]->link = base64_encode($val->link);
 		}
@@ -175,6 +176,37 @@ class AjaxController extends Controller {
 				->update(['nlist' => $user_info->nlist]);
 			echo json_encode(array('code' => 1000, 'info' => ''));
 		}
+	}
+	/**
+	 * 更新阅读记录
+	 * ======
+	 * @author 简强
+	 * @version 17.1.19
+	 */
+	public function postUpdateRead() {
+		$nid=$this->post['nid'];
+		$cid=$this->post['cid'];
+		if(!$nid||!$cid){
+			echo json_encode(array('code'=>1001,'error'=>'参数错误'));
+			exit;
+		}
+		$user_info=session('user');
+		if ($this->read_log->getLog($nid)) {
+			DB::table('read_log')
+				->where('uid', $user_info->id)
+				->where('nid', $nid)
+				->update(['cid' => $cid]);
+		} else {
+			DB::table('read_log')
+				->insert(array(
+				  'id' => uniqid(),
+				  'uid' => $user_info->id,
+				  'nid' => $nid,
+				  'cid' => $cid,
+				  'utime' => time(),
+			));
+		}
+		echo json_encode(array('code'=>1000,'info'=>'数据更新成功'));
 	}
 
 }

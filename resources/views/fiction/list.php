@@ -23,10 +23,24 @@ include_once('head.php');
 				</div>
 			</a>
 		</div>
-		<div class="weui-panel__ft">
-			<a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
-				<div class="weui-cell__bd" style="text-align: right;" id="add">收藏</div>
-			</a>    
+		<div class="weui-panel__bd">
+			<div class="weui-flex">
+				<div class="weui-flex__item">
+					<div class="placeholder">
+						<a href="/novel/<?php echo $info['cid']; ?>/<?php echo $info['link']; ?>/detail" class="weui-cell_link">继续阅读</a> 
+					</div>
+				</div>
+				<div class="weui-flex__item">
+					<div class="placeholder">
+						<a href="javascript:void(0);" class="weui-cell_link" id="sort">反序</a> 
+					</div>
+				</div>
+				<div class="weui-flex__item">
+					<div class="placeholder">
+						<a href="javascript:void(0);" class="weui-cell_link" id="add">收藏</a> 
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="page__bd">
@@ -62,7 +76,7 @@ include_once('head.php');
 <?php } ?>
 <script>
 	$(function() {
-		var id = '<?php echo $info['info']->id; ?>', p = 2, isOk = false,isWork=false;
+		var id = '<?php echo $info['info']->id; ?>', p = 2, isOk = false,isWork=false,sort='desc';
 		getList();
 		$('#add').click(function() {
 			$.post('/ajax/collect', {'id': id}, function(result) {
@@ -73,6 +87,17 @@ include_once('head.php');
 				}
 			}, 'json');
 		});
+		$('#sort').toggle(function(){
+				sort='asc';	
+				$('#list').html('');
+				p=1;
+				getList();
+			},function(){
+				sort='desc';	
+				$('#list').html('');
+				p=1;
+				getList();
+			});
 		$(window).scroll(function() {
 			viewH = $(this).height();
 			contentH = $(document).height();
@@ -90,7 +115,7 @@ include_once('head.php');
 				return false;
 			}
 			isWork=true;
-			$.post('/ajax/chapter-list', {'nid': id, 'p': p}, function(result) {
+			$.post('/ajax/chapter-list', {'nid': id, 'p': p,'limit':20,'sort':sort}, function(result) {
 				$('.weui-loadmore').hide();
 				if (result.code == 1000) {
 					p++;

@@ -163,8 +163,11 @@ class BiQuGe {
 	public static function update($url, $chapter) {
 		$_url = explode('/', $url);
 		$host = $_url[2];
-//		PrintCss::n(array($url,$chapter));
 //		phpQuery::newDocumentFile($url);
+		// $content=self::getHtml($url, 'http://' . $host, array('Host:' . $host));
+		// if(!mb_check_encoding($content, 'utf-8')) {
+		// 	$content = mb_convert_encoding($content,'UTF-8','gbk');
+		// }
 		phpQuery::newDocumentHTML(self::getHtml($url, 'http://' . $host, array('Host:' . $host)));
 		$list = pq('#list dl dd');
 		$start = false;

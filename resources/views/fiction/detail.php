@@ -27,7 +27,7 @@ include_once('head.php');
 		<div class="weui-mask" id="mask" style="opacity: 0; display: none;"></div>
 		<div class="weui-actionsheet" id="actionsheet">
 			<div class="weui-actionsheet__menu">
-				<div class="weui-actionsheet__cell" id="cache-next" >缓存后面500章节</div>
+				<div class="weui-actionsheet__cell" id="cache-next" >缓存后面500章节<span style="font-size:12px;">(会清空之前所有数据)</span></div>
 			</div>
 			<div class="weui-actionsheet__action">
 				<div class="weui-actionsheet__cell" id="actionsheetCancel">取消</div>
@@ -48,15 +48,17 @@ include_once('head.php');
 		</div>
 	</div>
 <?php } ?>
-<p style="position:fixed;width: 100%;height: 25px;left: 0;bottom: 0;background-color: #bdbdbd;opacity: 0.8;color: #000;font-size: 12px;line-height: 25px;display:none;" id="cache-info">
+<p style="position:fixed;width: 100%;height: 25px;left: 0;bottom: 0;background-color: rgba(0,0,0,0.8);color: #fff;font-size: 12px;line-height: 25px;display:none;" id="cache-info">
 	数据缓存中.........             请勿刷新页面!
+</p>
+<p style="position:fixed;width: 100%;height: 25px;left: 0;bottom: 53px;background-color: rgba(0,0,0,0.8);color: #fff;font-size: 12px;line-height: 25px;display:none;" id="info">
 </p>
 <div class="weui-tabbar" style="position:fixed;">
 	<a href="/user" class="weui-tabbar__item ">
 		<img src="<?php echo IMG_PATH; ?>user.png" alt="" class="weui-tabbar__icon">
 		<p class="weui-tabbar__label">我</p>
 	</a>
-	<a href="javascript:;" class="weui-tabbar__item" id="no">
+	<a href="javascript:;" class="weui-tabbar__item" id="on">
 		<img src="<?php echo IMG_PATH; ?>up.png" alt="" class="weui-tabbar__icon">
 		<p class="weui-tabbar__label">上一章</p>
 	</a>
@@ -80,7 +82,9 @@ include_once('head.php');
 				link = '<?php echo $info->link; ?>',
 				chapter_id = '<?php echo $info->chapter_id; ?>',
 				novel_id = '<?php echo $info->novel_id; ?>',
+				total=0,
 				chapter = {};
+				updateRead();
 		$('.weui-tabbar__item').on('click', function() {
 			$(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
 		});
@@ -92,6 +96,7 @@ include_once('head.php');
 				next = chapter_id;
 				chapter_id = on;
 				on = _id(on, false);
+				updateRead();
 			}
 		});
 		$('#next').click(function() {
@@ -101,6 +106,7 @@ include_once('head.php');
 				on = chapter_id;
 				chapter_id = next;
 				next = _id(next, true);
+				updateRead();
 			}
 		});
 		$('#cache').click(function() {
@@ -119,6 +125,15 @@ include_once('head.php');
 				chapter = JSON.parse(localStorage.getItem(novel_id));
 			}
 			if (chapter && chapter[id]) {
+				var num=0;
+				for(var i in chapter){
+					num++;
+					if(i==id){
+						break;
+					}
+				}
+				$('#info').html('正在使用缓存（剩余<span style="color: #ff0404;">'+num+'</span>章）');
+				$('#info').show();
 				setHtml(chapter[id].title, chapter[id].content);
 				javascript:scroll(0, 0);
 				return false;
@@ -130,6 +145,7 @@ include_once('head.php');
 			$('.weui-article').find('section').html(content);
 		}
 		function getInfo(cid) {
+			localStorage.clear();
 			$('#cache-info').show();
 			$('.weui-tabbar').hide();
 			$.post('/ajax/chapter-list', {'nid': novel_id, 'id': cid, 'limit': 500, 'p': 1}, function(result) {
@@ -162,6 +178,15 @@ include_once('head.php');
 				num = '0' + num;
 			}
 			return num + '_' + _id[1];
+		}
+		function updateRead(){
+			$.post('/ajax/update-read',{'nid':novel_id,'cid':chapter_id},function(result){
+				if(result.code==1000){
+					
+				}else{
+					send(false,result.error);
+				}
+			},'json');
 		}
 	})
 </script>

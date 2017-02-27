@@ -46,7 +46,7 @@ class NovelController extends Controller {
 //		PrintCss::r(array($result,$link));
 //		$this->updateList($result->id, $link); //更新列表
 		//查看是否存在阅读记录
-//		$read = $this->read_log->getLog($result->id);
+		$read = $this->read_log->getLog($result->id);
 //		if ($read && $jump) {
 //			return $this->getDetail($read->cid, $link);
 //			exit;
@@ -54,6 +54,7 @@ class NovelController extends Controller {
 		return view('fiction.list', ['info' => array(
 			'info' => $result,
 			'link' => $link,
+			'cid'=>$read->cid,
 			'list' => $this->chapter->getList($result->id, 'sort', 'desc'),
 		)]);
 	}
@@ -75,7 +76,6 @@ class NovelController extends Controller {
 			$this->crawl->getDetail($result->link, $id); //小说内容搜索并入库
 			$result = $this->chapter->getInfo($id); //再次获取数据
 		}
-		$this->updateRead($_id[1], $id); //更新阅读记录
 		$result->on = $this->_id((int) $_id[0] - 1) . '_' . $_id[1];
 		$result->link = $link;
 		$result->list = $_id[1];
@@ -86,29 +86,6 @@ class NovelController extends Controller {
 		return view('fiction.detail', ['info' => $result]);
 	}
 
-
-	/**
-	 * 更新阅读记录
-	 * ======
-	 * @author 简强
-	 * @version 17.1.19
-	 */
-	private function updateRead($nid, $cid) {
-		if ($this->read_log->getLog($nid)) {
-			DB::table('read_log')
-				->where('nid', $nid)
-				->update(['cid' => $cid]);
-		} else {
-			DB::table('read_log')
-				->insert(array(
-				  'id' => uniqid(),
-				  'nid' => $nid,
-				  'cid' => $cid,
-				  'utime' => time(),
-			));
-		}
-		return true;
-	}
 
 	/**
 	 * 章节ID前缀补全

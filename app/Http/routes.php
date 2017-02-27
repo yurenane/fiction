@@ -10,7 +10,6 @@
   | kernel and includes session state, CSRF protection, and more.
   |
  */
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\PrintCss;
@@ -91,6 +90,7 @@ Route::group(['middleware' => ['login']], function() {
 					->where('password', md5($post['pwd']))
 					->first();
 				if ($info) {
+					setcookie('user',$info->id,60*60*24);
 					$request->session()->set('user', $info);
 					echo json_encode(array('code' => 1000, 'info' => '登录成功'));
 				} else {
