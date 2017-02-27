@@ -90,7 +90,7 @@ Route::group(['middleware' => ['login']], function() {
 					->where('password', md5($post['pwd']))
 					->first();
 				if ($info) {
-					setcookie('user',$info->id,60*60*24);
+					setcookie('user',$info->id,time()+60*60*24);
 					$request->session()->set('user', $info);
 					echo json_encode(array('code' => 1000, 'info' => '登录成功'));
 				} else {

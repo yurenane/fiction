@@ -20,7 +20,7 @@ class UserLogin {
 					->where('id', $_COOKIE['user'])
 					->first();
 				if($info){
-					setcookie('user',$info->id,60*60*24);
+					setcookie('user',$info->id,time()+60*60*24);
 					$request->session()->set('user', $info);
 				}
 				return $next($request);
