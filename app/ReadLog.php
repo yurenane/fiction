@@ -10,7 +10,7 @@ class ReadLog extends Model {
 	protected $table = 'read_log';
 
 	/**
-	 * 更新小说详情
+	 * 获取阅读记录
 	 * ======
 	 * @author 简强
 	 * @version 17.1.20

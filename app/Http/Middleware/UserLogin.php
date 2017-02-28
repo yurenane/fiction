@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Support\Facades\DB;
 use Closure;
 
 class UserLogin {

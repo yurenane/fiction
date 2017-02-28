@@ -66,6 +66,12 @@ class NovelController extends Controller {
 	 * @version 17.1.12
 	 */
 	public function getDetail($id, $link) {
+		//判断是否跳转到最新阅读记录
+		$_id = explode('_', $id);
+		$read = $this->read_log->getLog($_id[1]);
+		if($read->cid<>$id){
+			$id=$read->cid;
+		}
 		$result = $this->chapter->getInfo($id);
 		$_id = explode('_', $id);
 		if (!$result) {
@@ -76,6 +82,7 @@ class NovelController extends Controller {
 			$this->crawl->getDetail($result->link, $id); //小说内容搜索并入库
 			$result = $this->chapter->getInfo($id); //再次获取数据
 		}
+		$read = $this->read_log->getLog($result->id);
 		$result->on = $this->_id((int) $_id[0] - 1) . '_' . $_id[1];
 		$result->link = $link;
 		$result->list = $_id[1];
