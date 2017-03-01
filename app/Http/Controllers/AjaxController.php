@@ -150,7 +150,7 @@ class AjaxController extends Controller {
 	}
 
 	/**
-	 * 删除收藏
+	 * 取消收藏
 	 * ======
 	 * @author 简强
 	 * @version 17.1.23

@@ -54,7 +54,7 @@ class NovelController extends Controller {
 		return view('fiction.list', ['info' => array(
 			'info' => $result,
 			'link' => $link,
-			'cid'=>$read->cid,
+			'cid'=>isset($read)?$read->cid:'',
 			'list' => $this->chapter->getList($result->id, 'sort', 'desc'),
 		)]);
 	}
