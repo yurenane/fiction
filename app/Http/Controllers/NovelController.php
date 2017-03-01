@@ -55,7 +55,6 @@ class NovelController extends Controller {
 			'info' => $result,
 			'link' => $link,
 			'cid'=>isset($read)?$read->cid:'',
-			'list' => $this->chapter->getList($result->id, 'sort', 'desc'),
 		)]);
 	}
 
@@ -69,7 +68,8 @@ class NovelController extends Controller {
 		//判断是否跳转到最新阅读记录
 		$_id = explode('_', $id);
 		$read = $this->read_log->getLog($_id[1]);
-		if($read->cid<>$id){
+		$_2id=explode('_', $read->cid);
+		if((int)$_2id[0]>(int)$_id[0]){
 			$id=$read->cid;
 		}
 		$result = $this->chapter->getInfo($id);

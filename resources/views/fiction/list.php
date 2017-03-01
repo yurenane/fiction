@@ -45,14 +45,6 @@ include_once('head.php');
 	</div>
 	<div class="page__bd">
 		<div class="weui-cells" id='list'>
-			<?php foreach ($info['list'] as $val) { ?>
-				<a class="weui-cell weui-cell_access" href="/novel/<?php echo $val->id; ?>/<?php echo $info['link']; ?>/detail">
-					<div class="weui-cell__bd">
-						<p><?php echo $val->title; ?></p>
-					</div>
-					<div class="weui-cell__ft"></div>
-				</a>
-			<?php } ?>
 		</div>
 		<div class="weui-loadmore" style='margin-bottom: 80px;display:none;' >
 			<i class="weui-loading"></i>
@@ -76,7 +68,7 @@ include_once('head.php');
 <?php } ?>
 <script>
 	$(function() {
-		var id = '<?php echo $info['info']->id; ?>', p = 2, isOk = false,isWork=false,sort='desc';
+		var id = '<?php echo $info['info']->id; ?>', p = 1, isOk = false,isWork=false,sort='desc';
 		getList();
 		$('#add').click(function() {
 			$.post('/ajax/collect', {'id': id}, function(result) {
