@@ -63,7 +63,9 @@ include_once('head.php');
 		});
 		$search.on('click', function() {
 			$searchInput.blur();
+			loading(true);
 			$.post('/search', {'title': $('#searchInput').val()}, function(result) {
+				loading(false);
 				if (result.code == 1000) {
 					setHtml(result.info);
 					$('#searchList').show();
