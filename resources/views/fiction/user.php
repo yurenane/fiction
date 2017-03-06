@@ -21,7 +21,7 @@ include_once('head.php');
 	<div class="weui-mask" id="mask" style="opacity: 0; display: none;"></div>
 	<div class="weui-actionsheet" id="actionsheet">
 		<div class="weui-actionsheet__menu">
-			<div class="weui-actionsheet__cell" id="cache-all" >缓存全本</div>
+			<!--<div class="weui-actionsheet__cell" id="cache-all" >缓存全本</div>-->
 			<div class="weui-actionsheet__cell" id="clear-cache" >清除缓存</div>
 			<div class="weui-actionsheet__cell" id="delete" >删除小说</div>
 		</div>
@@ -59,6 +59,7 @@ include_once('head.php');
 		});
 		$('#clear-cache').click(function() {
 			localStorage.removeItem(novel_id);
+			send(true,'清除成功');
 		});
 		$('#delete').click(function(){
 			$('#dialog').show().css('opacity', 1);
