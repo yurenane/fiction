@@ -107,7 +107,7 @@ include_once('head.php');
 				return false;
 			}
 			isWork=true;
-			$.post('/ajax/chapter-list', {'nid': id, 'p': p,'limit':100,'sort':sort}, function(result) {
+			$.post('/ajax/chapter-list', {'nid': id, 'p': p,'limit':50,'sort':sort}, function(result) {
 				$('.weui-loadmore').hide();
 				if (result.code == 1000) {
 					p++;
