@@ -38,7 +38,7 @@ class Chapter extends Model {
 
 	public function getInfo($id) {
 		$result = self::where('id', '=', $id)->first();
-		return (Object) $result->original;
+		return $result?(Object) $result->original:'';
 	}
 
 }
