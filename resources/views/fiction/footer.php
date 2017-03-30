@@ -13,7 +13,7 @@
 	</div>
 </div>
 <?php if (!in_array($page['id'], array('login', 'register', 'detail'))) { ?>
-	<div class="weui-tabbar" style="position:fixed;">
+	<div class="weui-tabbar" style="position:fixed;left:0;bottom:0;">
 		<a href="/" class="weui-tabbar__item <?php echo $page['id'] == 'index' ? ' weui-bar__item_on' : ''; ?>">
 			<img src="<?php echo IMG_PATH; ?>notebook.png" alt="" class="weui-tabbar__icon">
 			<p class="weui-tabbar__label">首页</p>
