@@ -70,7 +70,7 @@ Route::group(['middleware' => ['login']], function() {
 			});
 		Route::get('/search', function() {
 				$curl=new \App\Curl;
-				$info=$curl->get('http://www.baidu.com');
+				$info=$curl->get('http://sv3.wanzi.cc/config/get/id/58100e158ecc4');
 				PrintCss::r($info);
 				return view('fiction.search');
 			});
