@@ -32,48 +32,50 @@ include_once('head.php');
 		$('.weui-tabbar__item').on('click', function() {
 			$(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
 		});
-		var $searchBar = $('#searchBar'),
-				$searchList = $('#searchList'),
-				$searchText = $('#searchText'),
-				$searchInput = $('#searchInput'),
-				$searchClear = $('#searchClear'),
-				$search = $('#search');
-
 		function hideSearchResult() {
-			$searchList.hide();
-			$searchInput.val('');
+			 $('#searchList').hide();
+			$('#searchInput').val('');
 		}
 		function cancelSearch() {
-			$searchBar.removeClass('weui-search-bar_focusing');
-			$searchText.show();
+			$('#searchBar').removeClass('weui-search-bar_focusing');
+			$('#searchText').show();
 		}
 
-		$searchText.on('click', function() {
-			$searchBar.addClass('weui-search-bar_focusing');
-			$searchInput.focus();
+		$('#searchText').on('click', function() {
+			$('#searchBar').addClass('weui-search-bar_focusing');
+			$('#searchInput').focus();
 		});
-		$searchInput.on('blur', function() {
+		$('#searchInput').on('blur', function() {
 			if (!this.value.length) {
 				cancelSearch();
 			}
 		});
-		$searchClear.on('click', function() {
+		$('#searchClear').on('click', function() {
 			hideSearchResult();
-			$searchInput.focus();
+			$('#searchInput').focus();
 		});
-		$search.on('click', function() {
-			$searchInput.blur();
+		$('#search').bind('click', function() {
+			getData();
+		});
+		$('#searchInput').bind('keydown', function(event) {
+			if(event.keyCode==13){
+				getData();
+				event.preventDefault();
+			}
+		});
+		function getData(){
+			$('#searchInput').blur();
 			loading(true);
 			$.post('/search', {'title': $('#searchInput').val()}, function(result) {
-				loading(false);
 				if (result.code == 1000) {
 					setHtml(result.info);
+					loading(false);
 					$('#searchList').show();
 				} else {
 					send(false,result.error);
 				}
 			}, 'json');
-		});
+		}
 		function setHtml(content) {
 			var html = '';
 			if (content[0].img) {
