@@ -39,6 +39,7 @@ class BiQuGe {
 	 */
 
 	public static function search($title) {
+		set_time_limit(0);
 //		$id = rand(2, 6);
 		$id=2;
 		$curl = new Curl();
