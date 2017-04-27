@@ -28,6 +28,7 @@ class Curl {
 	public $response;
 	//请求消息头
 	private $http_header = array(
+	  'Connection: close',
 	  'User-Agent:Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
 		// 'CLIENT-IP:27.148.151.82',
 		// 'X-FORWARDED-FOR:27.148.151.82'
