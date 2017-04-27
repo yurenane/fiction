@@ -15,6 +15,9 @@ use App\BiQuGe;
 class SearchController extends Controller {
 
 	public function postIndex(Request $request) {
+		$curl=new \App\Curl;
+		$info=$curl->get('http://www.baidu.com');
+		PrintCss::r($info);
 		$post = $request->all();
 		$info= $this->search($post['title']);
 		if($info){
