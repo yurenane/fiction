@@ -12,6 +12,8 @@
 		<p class="weui-toast__content">数据加载中</p>
 	</div>
 </div>
+</div>
+</div>
 <?php if (!in_array($page['id'], array('login', 'register', 'detail'))) { ?>
 	<div class="weui-tabbar" style="position:fixed;left:0;bottom:0;">
 		<a href="/" class="weui-tabbar__item <?php echo $page['id'] == 'index' ? ' weui-bar__item_on' : ''; ?>">
@@ -27,9 +29,7 @@
 			<p class="weui-tabbar__label">我</p>
 		</a>
 	</div>
-	</div>
 <?php } ?>
-</div>
 <script>
 	function send(status, text) {
 		text ? $('#toast .weui-toast__content').text(text) : '';
