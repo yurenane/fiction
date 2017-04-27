@@ -66,14 +66,14 @@ class NovelController extends Controller {
 	 */
 	public function getDetail($id, $link) {
 		//判断是否跳转到最新阅读记录
-		$_id = explode('_', $id);
-		$read = $this->read_log->getLog($_id[1]);
-		if(isset($read)){
-			$_2id=explode('_', $read->cid);
-			if((int)$_2id[0]>(int)$_id[0]){
-				$id=$read->cid;
-			}
-		}		
+//		$_id = explode('_', $id);
+//		$read = $this->read_log->getLog($_id[1]);
+//		if(isset($read)){
+//			$_2id=explode('_', $read->cid);
+//			if((int)$_2id[0]>(int)$_id[0]){
+//				$id=$read->cid;
+//			}
+//		}		
 		$result = $this->chapter->getInfo($id);
 		$_id = explode('_', $id);
 		if (!$result) {
