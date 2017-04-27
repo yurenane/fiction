@@ -69,9 +69,6 @@ Route::group(['middleware' => ['login']], function() {
 				return view('fiction.index');
 			});
 		Route::get('/search', function() {
-				$curl=new \App\Curl;
-				$info=$curl->get('http://sv3.wanzi.cc/config/get/id/58100e158ecc4');
-				PrintCss::r($info);
 				return view('fiction.search');
 			});
 		Route::get('/user', function() {
