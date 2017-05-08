@@ -1,24 +1,17 @@
-<?php
-$page = array(
-  'id' => 'list',
-);
-
-include_once('head.php');
-?>
-<?php if ($info['info']) { ?>
+<?php if ($info) { ?>
 	<div class="weui-panel weui-panel_access">
 		<div class="weui-panel__bd">
 			<a href="javascript:;" class="weui-media-box weui-media-box_appmsg">
 				<div class="weui-media-box__hd" style="width:auto;height:auto;">
-					<img style="width:100px;height:125px;" class="weui-media-box__thumb" src="<?php echo IMG_PATH . 'fiction/' . $info['info']->id . '.jpg' ?>" alt="">
+					<img style="width:100px;height:125px;" class="weui-media-box__thumb" src="<?php echo IMG_PATH . 'fiction/' . $info->id . '.jpg' ?>" alt="">
 				</div>
 				<div class="weui-media-box__bd">
-					<h4 class="weui-media-box__title"><?php echo $info['info']->name; ?></h4>
-					<p class="weui-media-box__desc"><?php echo $info['info']->title; ?></p>
+					<h4 class="weui-media-box__title"><?php echo $info->name; ?></h4>
+					<p class="weui-media-box__desc"><?php echo $info->title; ?></p>
 					<ul class="weui-media-box__info">
-						<li class="weui-media-box__info__meta" style="margin:0;">作者：<?php echo $info['info']->author; ?></li>
-						<li class="weui-media-box__info__meta" style="margin:0;">更新时间：<?php echo date('Y-m-d', $info['info']->utime); ?></li>
-						<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" style="margin:0;"><?php echo $info['info']->new ? '最新章节：' . $info['info']->new : '更新状态：' . $info['info']->status; ?></li>
+						<li class="weui-media-box__info__meta" style="margin:0;">作者：<?php echo $info->author; ?></li>
+						<li class="weui-media-box__info__meta" style="margin:0;">更新时间：<?php echo date('Y-m-d', $info->utime); ?></li>
+						<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" style="margin:0;"><?php echo $info->new ? '最新章节：' . $info->new : '更新状态：' . $info->status; ?></li>
 					</ul>
 				</div>
 			</a>
@@ -27,7 +20,7 @@ include_once('head.php');
 			<div class="weui-flex">
 				<div class="weui-flex__item">
 					<div class="placeholder">
-						<a href="/novel/<?php echo $info['cid']; ?>/<?php echo $info['link']; ?>/detail" class="weui-cell_link">继续阅读</a> 
+						<a href="/novel/<?php echo $cid; ?>/<?php echo $link; ?>/detail" class="weui-cell_link">继续阅读</a> 
 					</div>
 				</div>
 				<div class="weui-flex__item">
@@ -68,7 +61,7 @@ include_once('head.php');
 <?php } ?>
 <script>
 	$(function() {
-		var id = '<?php echo $info['info']->id; ?>', p = 1, isOk = false,isWork=false,sort='desc';
+		var id = '<?php echo $info->id; ?>', p = 1, isOk = false,isWork=false,sort='desc';
 		getList();
 		$('#add').click(function() {
 			$.post('/ajax/collect', {'id': id}, function(result) {
@@ -128,4 +121,3 @@ include_once('head.php');
 		}
 	});
 </script>
-<?php include_once('footer.php'); ?>

@@ -51,11 +51,15 @@ class NovelController extends Controller {
 //			return $this->getDetail($read->cid, $link);
 //			exit;
 //		}
-		return view('fiction.list', ['info' => array(
-			'info' => $result,
-			'link' => $link,
-			'cid'=>isset($read)?$read->cid:'',
-		)]);
+		view()->share([
+		  'info' => $result,
+		  'link' => $link,
+		  'cid' => isset($read) ? $read->cid : '',
+		]);
+		return view('fiction.layout', [
+		  'content' => view()->make('fiction.list')->render(),
+		  'page_id' => 'list'
+		]);
 	}
 
 	/**
@@ -88,12 +92,14 @@ class NovelController extends Controller {
 		$result->link = $link;
 		$result->list = $_id[1];
 		$result->next = $this->_id((int) $_id[0] + 1) . '_' . $_id[1];
-		$result->chapter_id=$id;
-		$result->novel_id=$_id[1];
-//		PrintCss::r($result);
-		return view('fiction.detail', ['info' => $result]);
+		$result->chapter_id = $id;
+		$result->novel_id = $_id[1];
+		view()->share('info', $result);
+		return view('fiction.layout', [
+		  'content' => view()->make('fiction.detail')->render(),
+		  'page_id' => 'detail'
+		]);
 	}
-
 
 	/**
 	 * 章节ID前缀补全

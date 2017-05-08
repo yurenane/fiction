@@ -1,10 +1,3 @@
-<?php
-$page = array(
-  'id' => 'search',
-);
-
-include_once('head.php');
-?>
 <div class="page__hd">
 	<h1 class="page__title">SearchBar</h1>
 	<p class="page__desc">搜索栏</p>
@@ -98,4 +91,3 @@ include_once('head.php');
 		}
 	});
 </script>
-<?php include_once('footer.php'); ?>

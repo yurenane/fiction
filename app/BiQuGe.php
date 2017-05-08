@@ -41,7 +41,7 @@ class BiQuGe {
 	public static function search($title) {
 		set_time_limit(0);
 //		$id = rand(2, 6);
-		$id=2;
+		$id = 2;
 		$curl = new Curl();
 		$url = in_array($id, array(3, 5)) ? self::$url[$id] . '/modules/article/search.php?searchkey=' . urlencode($title) : 'http://zhannei.baidu.com/cse/search?q=' . urlencode($title) . '&p=0&s=' . self::$s[$id];
 //		phpQuery::newDocumentFile($url);
@@ -145,13 +145,13 @@ class BiQuGe {
 	public static function getdetail($url) {
 		$_url = explode('/', $url);
 //		$host = str_replace('www', 'm', $_url[2]);
-		$host =$_url[2];
+		$host = $_url[2];
 //		$id=  explode('_', $_url[3]);
 //		$url='http://'.$host.'/wapbook/'.$id[1].'_'.$_url[4];   移动端站点
 //		phpQuery::newDocumentFile($url);
 		phpQuery::newDocumentHTML(self::getHtml($url, 'http://' . $host, array('Host:' . $host)));
 		$content = pq('#content')->text();
-		$content = str_replace(array("\r\n", "\r", "\n", ' ','<br>'), '</p><p>', $content);
+		$content = str_replace(array("\r\n", "\r", "\n", ' ', '<br>'), '</p><p>', $content);
 		return array('title' => self::clear(pq('.bookname h1')->text()), 'content' => '<p>' . $content . '</p>');
 	}
 
@@ -173,18 +173,29 @@ class BiQuGe {
 		$list = pq('#list dl dd');
 		$start = false;
 		$info = array();
-		foreach ($list as $val) {
-			$title = pq($val)->find('a')->text();
-			if ($start) {
-				$info[] = array(
-				  'title' => $title,
-				  'link' => 'http://' . $host . pq($val)->find('a')->attr('href'),
-				);
+		$_chapter=$chapter;
+		$num=1;
+		do {
+			foreach ($list as $val) {
+				$title = pq($val)->find('a')->text();
+				if ($start) {
+					$info[] = array(
+					  'title' => $title,
+					  'link' => 'http://' . $host . pq($val)->find('a')->attr('href'),
+					);
+				}
+				if ($title == $_chapter->title) {
+					$start = true;
+				}
 			}
-			if ($title == $chapter->title) {
-				$start = true;
+			if(!$start){
+				$_chapter=  self::getChapter($_chapter->id);
 			}
-		}
+			if($num>=3){
+				break;
+			}
+			$num++;
+		} while (!$start);//进行三次更新
 		return $info;
 	}
 
@@ -220,6 +231,25 @@ class BiQuGe {
 		} else {
 			return self::getHtml($url, $referer, $header);
 		}
+	}
+
+	/**
+	 * 获取上一章  章节详情
+	 * ======
+	 * @author 简强
+	 * @version 17.5.8
+	 */
+	private static function getChapter($id) {
+		//计算小说上一章ID
+		$_id = explode('_', $id);
+		$num = (int) $_id[0] - 1;
+		$str = '';
+		for ($i = 1; $i <= (5 - strlen((string) $num)); $i++) {
+			$str .='0';
+		}
+		$id = $str . $num . '_' . $_id[1];
+		$chapter = new Chapter();
+		return $chapter->getInfo($id);
 	}
 
 }

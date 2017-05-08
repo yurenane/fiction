@@ -1,10 +1,3 @@
-<?php
-$page = array(
-  'id' => 'detail',
-);
-
-include_once('head.php');
-?>
 <?php if ($info) { ?>
 	<div class="page__bd">
 		<article class="weui-article">
@@ -168,4 +161,3 @@ include_once('head.php');
 		}
 	})
 </script>
-<?php include_once('footer.php'); ?>

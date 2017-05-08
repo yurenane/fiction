@@ -1,10 +1,3 @@
-<?php
-$page = array(
-  'id' => 'index',
-);
-
-include_once('head.php');
-?>
 <div class="page__hd">
 	<h1 class="page__title"><img src="<?php echo IMG_PATH;?>Cloud.png" height="21px" /></h1>
 	<p class="page__desc">小说列表</p>
@@ -81,4 +74,3 @@ include_once('head.php');
 		}
 	})
 </script>
-<?php include_once('footer.php'); ?>

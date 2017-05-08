@@ -1,10 +1,3 @@
-<?php
-$page=array(
-  'id'=>'register',
-);
-
-include_once('head.php');
-?>
 <div class="page__hd">
 	<h1 class="page__title">Register</h1>
 	<p class="page__desc">注册</p>
@@ -70,4 +63,3 @@ $(function(){
 	});
 });
 </script>
-<?php include_once('footer.php'); ?>
