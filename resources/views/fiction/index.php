@@ -54,7 +54,7 @@
 				html += '<a href="/novel/' + content[i].id + '/' + content[i].link + '" id="'+ content[i].id +'" data-url="'+ content[i].link+'" class="weui-media-box weui-media-box_appmsg"><div class="weui-media-box__hd" style="width:auto;height:auto;">\n\
 				<img style="width:60px;height:85px;" class="weui-media-box__thumb" src="' + img + 'fiction/' + content[i].id + '.jpg" alt=""></div><div class="weui-media-box__bd">\n\
 				<h4 class="weui-media-box__title">' + content[i].name + '</h4><p class="weui-media-box__desc">' + content[i].title + '</p><ul class="weui-media-box__info">\n\
-				<li class="weui-media-box__info__meta" style="margin:0;">' + (content[i].new ? '最新章节：' + content[i].new : '更新状态：' + content[i].status) + '</li></ul></div></a>';
+				<li class="weui-media-box__info__meta" style="margin:0;width: 100%;">' + (content[i].new ? '最新章节：' + content[i].new : '更新状态：' + content[i].status) + '</li></ul></div></a>';
 			}
 			$('#list').append(html);
 		}
