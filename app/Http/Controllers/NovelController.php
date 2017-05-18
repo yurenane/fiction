@@ -51,7 +51,7 @@ class NovelController extends Controller {
 //			return $this->getDetail($read->cid, $link);
 //			exit;
 //		}
-		DB::table('novel')->where('id', $result->id)->update(array('status'=>1,'utime'=>time()));
+		DB::table('novel')->where('id', $result->id)->update(array('status'=>1,'rtime'=>time()));
 		view()->share([
 		  'info' => $result,
 		  'link' => $link,

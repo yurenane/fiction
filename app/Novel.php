@@ -29,11 +29,11 @@ class Novel {
 	 */
 	public function getList($id = array(), $limit = 10, $skip = 0) {
 		if (!$id) {
-			return DB::table('novel')->orderBy('utime', 'desc')->skip($skip)->take($limit)->get();
+			return DB::table('novel')->orderBy('rtime', 'desc')->skip($skip)->take($limit)->get();
 		} elseif (is_array($id)) {
-			return DB::table('novel')->whereIn('id', $id)->orderBy('utime', 'desc')->skip($skip)->take($limit)->get();
+			return DB::table('novel')->whereIn('id', $id)->orderBy('rtime', 'desc')->skip($skip)->take($limit)->get();
 		} else {
-			return DB::table('novel')->where('id', $id)->orderBy('utime', 'desc')->skip($skip)->take($limit)->get();
+			return DB::table('novel')->where('id', $id)->orderBy('rtime', 'desc')->skip($skip)->take($limit)->get();
 		}
 	}
 
