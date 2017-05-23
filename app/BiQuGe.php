@@ -40,7 +40,7 @@ class BiQuGe {
 
 	public static function search($title) {
 		set_time_limit(0);
-		$arr=array(4,6);
+		$arr=array(2,4,6,7);
 		$key= array_rand($arr);
 		$id =$arr[$key];
 		$curl = new Curl();
