@@ -42,7 +42,7 @@ class BiQuGe {
 		set_time_limit(0);
 		$arr=array(2,4,6);
 		$key= array_rand($arr);
-		$id =$arr[$key];
+		$id =2;
 		$curl = new Curl();
 		$url = in_array($id, array(3, 5)) ? self::$url[$id] . '/modules/article/search.php?searchkey=' . urlencode($title) : 'http://zhannei.baidu.com/cse/search?q=' . urlencode($title) . '&p=0&s=' . self::$s[$id];
 //		phpQuery::newDocumentFile($url);
