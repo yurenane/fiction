@@ -166,6 +166,9 @@ Route::group(['middleware' => ['login']], function() {
 							$crawl = new App\Crawl();
 							$result = $chapter->getInfo($id);
 							$_id = explode('_', $id);
+							if(!$result){
+								return redirect('/novel/list/' . $_id[1]);
+							}
 							if (strlen($result->content)<100) {//章节还未载入
 								$crawl->getDetail($result->link, $id); //小说内容搜索并入库
 								$result = $chapter->getInfo($id); //再次获取数据
@@ -176,9 +179,6 @@ Route::group(['middleware' => ['login']], function() {
 							$result->next = $chapter->setId((int) $_id[0] + 1) . '_' . $_id[1];
 							$result->chapter_id = $id;
 							$result->novel_id = $_id[1];
-							if (!$chapter->getInfo($result->next)) {
-								$result->next = $id;
-							}
 							view()->share('info', $result);
 							return view('fiction.layout', [
 							  'content' => view()->make('fiction.detail')->render(),
