@@ -115,7 +115,7 @@
 		function setHtml(content) {
 			var html = '';
 			for (var i in content) {
-				html += '<a class="weui-cell weui-cell_access" href="/novel/detail' + content[i].id +'"><div class="weui-cell__bd"><p>' + content[i].title + '</p></div><div class="weui-cell__ft"></div></a>';
+				html += '<a class="weui-cell weui-cell_access" href="/novel/detail/' + content[i].id +'"><div class="weui-cell__bd"><p>' + content[i].title + '</p></div><div class="weui-cell__ft"></div></a>';
 			}
 			$('#list').append(html);
 		}
