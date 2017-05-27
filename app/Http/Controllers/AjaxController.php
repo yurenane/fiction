@@ -119,10 +119,6 @@ class AjaxController extends Controller {
 		$limit = isset($this->post['limit']) ? $this->post['limit'] : 10;
 		$id = isset($this->post['id']) ? $this->post['id'] : '';
 		$sort = isset($this->post['sort']) ? $this->post['sort'] : 'desc';
-		if (!$id) {
-			echo json_encode(array('code' => 1001, 'error' => '参数错误'));
-			exit;
-		}
 		$list = $this->chapter->getList($this->post['nid'], 'sort', $sort, $limit, ($this->post['p'] - 1) * $limit, $id);
 		foreach ($list as $key => $val) {
 			$list[$key]->link = base64_encode($val->link);

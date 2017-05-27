@@ -11,7 +11,7 @@
 					<ul class="weui-media-box__info">
 						<li class="weui-media-box__info__meta" style="margin:0;">作者：<?php echo $info->author; ?></li>
 						<li class="weui-media-box__info__meta" style="margin:0;">更新时间：<?php echo date('Y-m-d', $info->utime); ?></li>
-						<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" style="margin:0;"><?php echo $info->new ? '最新章节：' . $info->new : '更新状态：' . $info->status; ?></li>
+						<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" style="margin:0;"><?php echo $info->new ? '最新章节：' . $info->new : ''; ?></li>
 					</ul>
 				</div>
 			</a>
