@@ -108,8 +108,8 @@
 		function setHtml(content) {
 			var html = '';
 			for (var i in content) {
-				html += '<div class="weui-panel weui-panel_access"><div class="weui-panel__bd"><a href="/novel/' + content[i].id + '/' + content[i].link + '" id="' + content[i].id + '" data-url="' + content[i].link + '" \n\
-				class="weui-media-box weui-media-box_appmsg"><div class="weui-media-box__hd" style="width:auto;height:auto;"><img style="width:60px;height:85px;" class="weui-media-box__thumb" src="' + img + 'fiction/' + content[i].id + '.jpg" alt="">\n\
+				html += '<div class="weui-panel weui-panel_access"><div class="weui-panel__bd"><a href="' + content[i].url +'" id="' + content[i].id + '"\n\
+				class="weui-media-box weui-media-box_appmsg"><div class="weui-media-box__hd" style="width:auto;height:auto;"><img style="width:60px;height:85px;" class="weui-media-box__thumb" src="' +content[i].img_url + '" alt="">\n\
 				</div><div class="weui-media-box__bd"><h4 class="weui-media-box__title">' + content[i].name + '<span class="weui-badge" style="margin-left: 5px;'+(content[i].status==2?'':'display:none;')+'">更新</span></h4><p class="weui-media-box__desc">' + content[i].title + '</p><ul class="weui-media-box__info">\n\
 				<li class="weui-media-box__info__meta" style="margin:0;width: 100%;" id="new-' + content[i].id + '">' + (content[i].new ? '最新章节：' + content[i].new : '更新状态：' + content[i].status) + '</li></ul></div></a>\n\
 				</div><div class="weui-panel__ft"><a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link" rel="' + content[i].id + '"><div class="weui-cell__bd">查看更多'+(localStorage.getItem(content[i].id)?'<span style="font-size:12px;">(已缓存)</span>':'')+'</div><span class="weui-cell__ft"></span></a></div></div>';
@@ -118,7 +118,7 @@
 		}
 		function update() {
 			$('#list .weui-panel__bd a').each(function() {
-				getNew($(this).attr('id'), $(this).attr('data-url'));
+				getNew($(this).attr('id'));
 				updateNovel($(this).attr('id'));
 			});
 		}
@@ -126,7 +126,7 @@
 			if (!id && !link) {
 				return false;
 			}
-			$.post('ajax/update-list', {'id': id, 'link': link}, function(result) {
+			$.post('/ajax/update-list', {'id': id}, function(result) {
 				if (result.code == 1000) {
 					$('#new-' + id).text('最新章节：' + result.info);
 					$('#' + id).find('.weui-media-box__title span').show();
@@ -136,7 +136,8 @@
 			}, 'json');
 		}
 		function updateNovel(id) {
-			$.post('ajax/update-novel', {'id': id}, function(result) {
+			$.post('/ajax/update-novel', {'id': id}, function(result) {
+				
 			}, 'json');
 		}
 		function getInfo(p) {

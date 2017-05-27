@@ -29,72 +29,61 @@ Route::get('/test', function() {
 Route::get('/weui', function() {
 			return view('weui');
 		});
-//汽车之家车型抓取
-Route::get('/car', function() {
-			set_time_limit(0);
-			$curl = new Curl();
-			$curl->setReferer('http://www.autohome.com.cn/beijing/');
-			$curl->setHeader(array('Host:www.autohome.com.cn', 'Content-Type:text/plain;charset=gb2312'));
-			$content = $curl->get('http://www.autohome.com.cn/ashx/AjaxIndexCarFind.ashx?type=1');
-			$content = json_decode(iconv('gb2312', 'utf-8', $content));
-//		PrintCss::r(json_decode(iconv('gb2312','utf-8',$content)));
-			$car = array();
-			header("Content-type:text/csv;charset=UTF-8");
-			header("Content-Disposition:attachment;filename=car-" . date('Ymd') . ".csv");
-			header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
-			header('Expires:0');
-			header('Pragma:public');
-			echo "品牌,车类,车系,年份,车型\n";
-			foreach ($content->result->branditems as $key => $val) {
-				$info = $curl->get('http://www.autohome.com.cn/ashx/AjaxIndexCarFind.ashx?type=3&value=' . $val->id);
-				$info = json_decode(iconv('gb2312', 'utf-8', $info));
-				foreach ($info->result->factoryitems as $v) {
-					foreach ($v->seriesitems as $v1) {
-						$info2 = $curl->get('http://www.autohome.com.cn/ashx/AjaxIndexCarFind.ashx?type=5&value=' . $v1->id);
-						$info2 = json_decode(iconv('gb2312', 'utf-8', $info2));
-//					PrintCss::n(array($content, $list, $list2));
-						foreach ($info2->result->yearitems as $v2) {
-							foreach ($v2->specitems as $v3) {
-								echo $val->name . "," . $v->name . "," . $v1->name . "," . $v2->name . "," . $v3->name . "\n";
-							}
-						}
-					}
-				}
-			}
-		});
 //===========
 //小说阅读
 //===========
 Route::group(['middleware' => ['login']], function() {
+			/**
+			 * 首页
+			 * ======
+			 * @author 简强
+			 * @version 17.1.12
+			 */
 			Route::get('/', function() {
 						return view('fiction.layout', array(
 						  'content' => view()->make('fiction.index')->render(),
 						  'page_id' => 'index',
 						));
 					});
+			/**
+			 * 搜索页面
+			 * ======
+			 * @author 简强
+			 * @version 17.1.12
+			 */
 			Route::get('/search', function() {
 						return view('fiction.layout', array(
 						  'content' => view()->make('fiction.search')->render(),
 						  'page_id' => 'search',
 						));
 					});
+			/**
+			 * 用户小说列表页面
+			 * ======
+			 * @author 简强
+			 * @version 17.1.12
+			 */
 			Route::get('/user', function() {
 						$user_info = session('user');
-						$user_info = DB::table('user')
-								->where('id', $user_info->id)
-								->first();
 						view()->share('info', $user_info);
 						return view('fiction.layout', array(
 						  'content' => view()->make('fiction.user')->render(),
 						  'page_id' => 'user',
 						));
 					});
+			/**
+			 * 登录页面
+			 * ======
+			 * @author 简强
+			 * @version 17.1.12
+			 */
 			Route::get('/login', function() {
 						return view('fiction.layout', array(
 						  'content' => view()->make('fiction.login')->render(),
 						  'page_id' => 'login',
 						));
 					});
+			//
 			Route::post('/login', function(Request $request) {
 						$post = $request->all();
 						$info = DB::table('user')
@@ -109,6 +98,12 @@ Route::group(['middleware' => ['login']], function() {
 							echo json_encode(array('code' => 1001, 'error' => '登录失败'));
 						}
 					});
+			/**
+			 * 注册页面
+			 * ======
+			 * @author 简强
+			 * @version 17.1.12
+			 */
 			Route::get('/register', function() {
 						return view('fiction.layout', array(
 						  'content' => view()->make('fiction.register')->render(),
@@ -127,7 +122,84 @@ Route::group(['middleware' => ['login']], function() {
 						DB::table('user')->insert(['id' => uniqid(), 'name' => $post['name'], 'password' => md5($post['pwd']), 'ctime' => time()]);
 						echo json_encode(array('code' => 1000, 'info' => '注册成功'));
 					});
+			/**
+			 * 小说列表
+			 * ======
+			 * @author 简强
+			 * @version 17.5.26
+			 */
+			Route::get('/novel/list/{id}', function($id) {
+						if ($id) {
+							$novel = new Novel();
+							$read_log = new \App\ReadLog();
+							$result = $novel->getInfo($id);
+							//小说封面
+							$img_url='statics/images/fiction/';
+							if(is_file($img_url.$result->id.'.jpg')){
+								$result->img_url='/'.$img_url.$result->id.'.jpg';
+							}else{
+								$result->img_url='/'.$img_url.'default.jpg';
+							}
+							//查看是否存在阅读记录
+							$read = $read_log->getLog(array($result->id));
+							//更新小说阅读时间
+							$novel->setRtime($result->id);
+							view()->share([
+							  'info' => $result,
+							  'cid' => $read ? $read->cid : '',
+							]);
+							return view('fiction.layout', [
+							  'content' => view()->make('fiction.list')->render(),
+							  'page_id' => 'list'
+							]);
+						}
+					});
+			/**
+			 * 小说详情页
+			 * ======
+			 * @author 简强
+			 * @version 17.5.26
+			 */
+			Route::get('/novel/detail/{id}', function($id) {
+						if ($id) {
+							$chapter = new Chapter();
+							$crawl = new App\Crawl();
+							$result = $chapter->getInfo($id);
+							$_id = explode('_', $id);
+							if (strlen($result->content)<100) {//章节还未载入
+								$crawl->getDetail($result->link, $id); //小说内容搜索并入库
+								$result = $chapter->getInfo($id); //再次获取数据
+							}
+							$on = (int) $_id[0] <= 1 ? 0 : (int) $_id[0] - 1;
+							$result->on = $chapter->setId($on) . '_' . $_id[1];
+							$result->list = $_id[1];
+							$result->next = $chapter->setId((int) $_id[0] + 1) . '_' . $_id[1];
+							$result->chapter_id = $id;
+							$result->novel_id = $_id[1];
+							if (!$chapter->getInfo($result->next)) {
+								$result->next = $id;
+							}
+							view()->share('info', $result);
+							return view('fiction.layout', [
+							  'content' => view()->make('fiction.detail')->render(),
+							  'page_id' => 'detail'
+							]);
+						}
+					});
+			/**
+			 * 小说搜索并入库
+			 * ======
+			 * @author 简强
+			 * @version 17.5.25
+			 */
+			Route::get('/novel/add/{link}', function($link) {
+						if ($link) {
+							$crawl = new App\Crawl();
+							$id = $crawl->getList(base64_decode($link)); //小说搜索并入库
+							return redirect('/novel/list/' . $id);
+						}
+					});
 			Route::controller('search', 'SearchController');
-			Route::controller('/novel/{name}/{link}', 'NovelController');
+//			Route::controller('/novel/{name?}/{link?}', 'NovelController');
 			Route::controller('ajax', 'AjaxController');
 		});

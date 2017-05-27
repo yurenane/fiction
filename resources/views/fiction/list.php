@@ -3,7 +3,7 @@
 		<div class="weui-panel__bd">
 			<a href="javascript:;" class="weui-media-box weui-media-box_appmsg">
 				<div class="weui-media-box__hd" style="width:auto;height:auto;">
-					<img style="width:100px;height:125px;" class="weui-media-box__thumb" src="<?php echo IMG_PATH . 'fiction/' . $info->id . '.jpg' ?>" alt="">
+					<img style="width:100px;height:125px;" class="weui-media-box__thumb" src="<?php echo  $info->img_url; ?>" alt="">
 				</div>
 				<div class="weui-media-box__bd">
 					<h4 class="weui-media-box__title"><?php echo $info->name; ?></h4>
@@ -20,7 +20,7 @@
 			<div class="weui-flex">
 				<div class="weui-flex__item">
 					<div class="placeholder">
-						<a href="/novel/<?php echo $cid; ?>/<?php echo $link; ?>/detail" class="weui-cell_link">继续阅读</a> 
+						<a href="/novel/detail/<?php echo $cid?$cid:'00000_'.$info->id; ?>" class="weui-cell_link"><?php echo $cid?'继续阅读':'开始阅读';  ?></a> 
 					</div>
 				</div>
 				<div class="weui-flex__item">
@@ -68,7 +68,7 @@
 				if (result.code == 1000) {
 					send(true);
 				} else {
-					alert(result.error);
+					send(false,result.error);
 				}
 			}, 'json');
 		});
@@ -115,7 +115,7 @@
 		function setHtml(content) {
 			var html = '';
 			for (var i in content) {
-				html += '<a class="weui-cell weui-cell_access" href="/novel/' + content[i].id + '/' + content[i].link + '/detail"><div class="weui-cell__bd"><p>' + content[i].title + '</p></div><div class="weui-cell__ft"></div></a>';
+				html += '<a class="weui-cell weui-cell_access" href="/novel/detail' + content[i].id +'"><div class="weui-cell__bd"><p>' + content[i].title + '</p></div><div class="weui-cell__ft"></div></a>';
 			}
 			$('#list').append(html);
 		}

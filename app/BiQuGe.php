@@ -32,72 +32,67 @@ class BiQuGe {
 	); //搜索ID
 
 	/**
-	 * 小说搜索
+	 * 小说搜索 默认一个网址
 	 * ======
 	 * @author 简强
-	 * @version 17.1.12
+	 * @version 17.2.25
 	 */
 
 	public static function search($title) {
-		set_time_limit(0);
-		$arr=array(2,4,6);
-		$key= array_rand($arr);
-		$id =2;
-		$curl = new Curl();
-		$url = in_array($id, array(3, 5)) ? self::$url[$id] . '/modules/article/search.php?searchkey=' . urlencode($title) : 'http://zhannei.baidu.com/cse/search?q=' . urlencode($title) . '&p=0&s=' . self::$s[$id];
+		$url = 'http://www.woquge.com/modules/article/search.php?searchkey=' . urlencode($title);
 //		phpQuery::newDocumentFile($url);
-		phpQuery::newDocumentHTML(self::getHtml($url, self::$url[$id], array('Host:www.baidu.com')));
+		phpQuery::newDocumentHTML(self::getHtml($url, 'http://www.woquge.com', array('Host:www.woquge.com')));
 		$info = array();
-		if (in_array($id, array(3, 5))) {
-			$list = pq('.grid tr');
-			foreach ($list as $key => $val) {
-				if ($key) {
-					$name = pq($val)->find('td')->eq(0)->find('a')->text();
-					$info[] = array(
-					  'name' => $name,
-					  '_name' => urlencode($name),
-					  'img' => '',
-					  'title' => '',
-					  'author' => pq($val)->find('td')->eq(2)->text(),
-					  'type' => '',
-					  'utime' => pq($val)->find('td')->eq(4)->text(),
-					  'new' => pq($val)->find('td')->eq(1)->find('a')->text(),
-					  'stauts' => pq($val)->find('td')->eq(5)->attr('title'),
-					  'link' => base64_encode(pq($val)->find('td')->eq(0)->find('a')->attr('href')),
-					  '_link' => pq($val)->find('td')->eq(0)->find('a')->attr('href'),
-					);
-				}
-			}
-		} else {
-			$list = pq('.result-list .result-item');
-			foreach ($list as $val) {
-				$name = pq($val)->find('.result-item-title a')->attr('title');
-				//获取图片，转成base64
-				$img = pq($val)->find('.result-game-item-pic img')->attr('src');
+		$list = pq('.grid tr');
+		foreach ($list as $key => $val) {
+			if ($key) {
+				$name = pq($val)->find('td')->eq(0)->find('a')->text();
 				$info[] = array(
 				  'name' => $name,
 				  '_name' => urlencode($name),
-				  '_img' => $img,
-				  'img' => 'data:image/jpg;base64,' . base64_encode($curl->get($img)),
-				  'title' => self::clear(pq($val)->find('.result-game-item-desc')->text()),
-				  'author' => self::clear(pq($val)->find('.result-game-item-info p')->eq(0)->find('span')->eq(1)->text()),
-				  'type' => rtrim(pq($val)->find('.result-game-item-info p')->eq(1)->find('span')->eq(1)->text()),
-				  'utime' => rtrim(pq($val)->find('.result-game-item-info p')->eq(2)->find('span')->eq(1)->text()),
-				  'new' => rtrim(pq($val)->find('.result-game-item-info p')->eq(3)->find('a')->text()),
-				  'stauts' => rtrim(pq($val)->find('.result-game-item-info p')->eq(3)->find('span')->eq(1)->text()),
-				  'link' => base64_encode(pq($val)->find('.result-game-item-pic a')->attr('href')),
-				  '_link' => pq($val)->find('.result-game-item-pic a')->attr('href'),
+				  'img' => '',
+				  'title' => '',
+				  'author' => pq($val)->find('td')->eq(2)->text(),
+				  'type' => '',
+				  'utime' => pq($val)->find('td')->eq(4)->text(),
+				  'new' => pq($val)->find('td')->eq(1)->find('a')->text(),
+				  'stauts' => pq($val)->find('td')->eq(5)->attr('title'),
+				  'link' => base64_encode(pq($val)->find('td')->eq(0)->find('a')->attr('href')),
+				  '_link' => pq($val)->find('td')->eq(0)->find('a')->attr('href'),
 				);
 			}
 		}
 		return $info;
+//			$list = pq('.result-list .result-item');
+//			foreach ($list as $val) {
+//				$name = pq($val)->find('.result-item-title a')->attr('title');
+//				//获取图片，转成base64
+//				$img = pq($val)->find('.result-game-item-pic img')->attr('src');
+//				$info[] = array(
+//				  'name' => $name,
+//				  '_name' => urlencode($name),
+//				  '_img' => $img,
+//				  'img' => 'data:image/jpg;base64,' . base64_encode($curl->get($img)),
+//				  'title' => self::clear(pq($val)->find('.result-game-item-desc')->text()),
+//				  'author' => self::clear(pq($val)->find('.result-game-item-info p')->eq(0)->find('span')->eq(1)->text()),
+//				  'type' => rtrim(pq($val)->find('.result-game-item-info p')->eq(1)->find('span')->eq(1)->text()),
+//				  'utime' => rtrim(pq($val)->find('.result-game-item-info p')->eq(2)->find('span')->eq(1)->text()),
+//				  'new' => rtrim(pq($val)->find('.result-game-item-info p')->eq(3)->find('a')->text()),
+//				  'stauts' => rtrim(pq($val)->find('.result-game-item-info p')->eq(3)->find('span')->eq(1)->text()),
+//				  'link' => base64_encode(pq($val)->find('.result-game-item-pic a')->attr('href')),
+//				  '_link' => pq($val)->find('.result-game-item-pic a')->attr('href'),
+//				);
+//			}
 	}
 
 	/**
 	 * 获取小说列表
 	 * ======
+	 * @param string $url  小说网络路径
+	 *  @param bool $clear  是否从第一章开始
+	 * ======
 	 * @author 简强
-	 * @version 17.1.12
+	 * @version 17.5.25
 	 */
 	public static function getList($url) {
 		$_url = explode('/', $url);
@@ -112,7 +107,7 @@ class BiQuGe {
 		$novel['info'] = array(
 		  'name' => $name,
 		  'title' => self::clear(pq('#intro p')->eq(0)->text()),
-		  'cover' => 'http://' . $host . pq('#fmimg')->find('img')->attr('src'),
+		  'cover' => pq('#fmimg')->find('img')->attr('src'),
 		  'author' => self::strcut('者：', '', $author),
 		  'type' => self::strcut('笔趣阁 > ', ' > ' . $name, $type),
 		  'new' => pq('#info p')->eq(3)->find('a')->text(),
@@ -120,20 +115,14 @@ class BiQuGe {
 		  'link' => $url,
 		);
 		$list = pq('#list dl dd');
-//		$start = false;
-		foreach ($list as $val) {
-//			$title = pq($val)->find('a')->text();
-//			if (strpos('*' . $title, '第一章')) {
-//				$start = true;
-//			}
-//			if ($start) {
-			$novel['list'][] = array(
-			  'title' => pq($val)->find('a')->text(),
-			  'link' => 'http://' . $host . pq($val)->find('a')->attr('href'),
-			);
-//			}
+		foreach ($list as $key => $val) {
+			if ($key > 8) {
+				$novel['list'][] = array(
+				  'title' => pq($val)->find('a')->text(),
+				  'link' =>pq($val)->find('a')->attr('href'),
+				);
+			}
 		}
-//		PrintCss::r($novel);
 		return $novel;
 	}
 
@@ -152,7 +141,7 @@ class BiQuGe {
 //		phpQuery::newDocumentFile($url);
 		phpQuery::newDocumentHTML(self::getHtml($url, 'http://' . $host, array('Host:' . $host)));
 		$content = pq('#content')->text();
-		$content = str_replace(array("\r\n", "\r", "\n", ' ', '<br>'), '</p><p>', $content);
+		$content = str_replace(array("\r\n", "\r", "\n", ' ', '<br>','　　'), '</p><p>', $content);
 		return array('title' => self::clear(pq('.bookname h1')->text()), 'content' => '<p>' . $content . '</p>');
 	}
 
@@ -174,29 +163,29 @@ class BiQuGe {
 		$list = pq('#list dl dd');
 		$start = false;
 		$info = array();
-		$_chapter=$chapter;
-		$num=1;
+		$_chapter = $chapter;
+		$num = 1;
 		do {
 			foreach ($list as $val) {
 				$title = pq($val)->find('a')->text();
 				if ($start) {
 					$info[] = array(
 					  'title' => $title,
-					  'link' => 'http://' . $host . pq($val)->find('a')->attr('href'),
+					  'link' =>pq($val)->find('a')->attr('href'),
 					);
 				}
 				if ($title == $_chapter->title) {
 					$start = true;
 				}
 			}
-			if(!$start){
-				$_chapter=  self::getChapter($_chapter->id);
+			if (!$start) {
+				$_chapter = self::getChapter($_chapter->id);
 			}
-			if($num>=3){
+			if ($num >= 3) {
 				break;
 			}
 			$num++;
-		} while (!$start);//进行三次更新
+		} while (!$start); //进行三次更新
 		return $info;
 	}
 

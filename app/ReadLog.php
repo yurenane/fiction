@@ -2,22 +2,21 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use App\PrintCss;
+use Illuminate\Support\Facades\DB;
 
-class ReadLog extends Model {
-
-	protected $table = 'read_log';
+class ReadLog {
 
 	/**
 	 * 获取阅读记录
+	 * ======
+	 * @param array $id  小说ID数组
 	 * ======
 	 * @author 简强
 	 * @version 17.1.20
 	 */
 	public function getLog($id) {
-		$result = self::where('nid', $id)->first();
-		return $result?(Object) $result->original:$result;
+		$result = DB::table('read_log')->whereIn('nid', $id)->get();
+		return count($result) ==1 ? $result [0]: $result;
 	}
 
 }

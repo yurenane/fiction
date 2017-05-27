@@ -32,6 +32,9 @@
 						<p class="weui-toast__content">数据加载中</p>
 					</div>
 				</div>
+				<div class="weui-footer" style="margin-bottom: 60px;">
+					<p class="weui-footer__text">@2017</p>
+				</div>
 			</div>
 		</div>
 		<?php if (!in_array($page_id, array('login', 'register', 'detail'))) { ?>
@@ -40,17 +43,17 @@
 					<img src="<?php echo IMG_PATH; ?>notebook.png" alt="" class="weui-tabbar__icon">
 					<p class="weui-tabbar__label">首页</p>
 				</a>
-				<a href="/search" class="weui-tabbar__item <?php echo $page_id== 'search' ? ' weui-bar__item_on' : ''; ?>">
+				<a href="/search" class="weui-tabbar__item <?php echo $page_id == 'search' ? ' weui-bar__item_on' : ''; ?>">
 					<img src="<?php echo IMG_PATH; ?>global.png" alt="" class="weui-tabbar__icon">
 					<p class="weui-tabbar__label">搜索</p>
 				</a>
-				<a href="/user" class="weui-tabbar__item <?php echo $page_id== 'user' ? ' weui-bar__item_on' : ''; ?>">
+				<a href="/user" class="weui-tabbar__item <?php echo $page_id == 'user' ? ' weui-bar__item_on' : ''; ?>">
 					<img src="<?php echo IMG_PATH; ?>user.png" alt="" class="weui-tabbar__icon">
 					<p class="weui-tabbar__label">我</p>
 				</a>
 			</div>
 		<?php } ?>
-		<?php if ($page_id== 'detail') { ?>
+		<?php if ($page_id == 'detail') { ?>
 			<div class="weui-tabbar" style="position:fixed;">
 				<a href="/user" class="weui-tabbar__item ">
 					<img src="<?php echo IMG_PATH; ?>user.png" alt="" class="weui-tabbar__icon">
@@ -60,7 +63,7 @@
 					<img src="<?php echo IMG_PATH; ?>up.png" alt="" class="weui-tabbar__icon">
 					<p class="weui-tabbar__label">上一章</p>
 				</a>
-				<a href="/novel/<?php echo $info ? $info->list : ''; ?>/<?php echo $info ? $info->link : ''; ?>/" class="weui-tabbar__item ">
+				<a href="/novel/list/<?php echo  $info->list; ?>" class="weui-tabbar__item ">
 					<img src="<?php echo IMG_PATH; ?>adjustments.png" alt="" class="weui-tabbar__icon">
 					<p class="weui-tabbar__label">目录</p>
 				</a>
@@ -78,12 +81,15 @@
 			function send(status, text) {
 				text ? $('#toast .weui-toast__content').text(text) : '';
 				if (!status) {
-					$('#toast .weui-icon_toast').removeClass('weui-icon-success-no-circle').addClass('weui-icon-warn').css('font-size', '55px');
+					$('#toast .weui-icon-success-no-circle').hide();
+					$('#toast p').css('margin-top', '50px');
+				} else {
+					$('#toast .weui-icon-success-no-circle').show();
 				}
 				$('#toast').show().css('opacity', 1);
 				setTimeout(function() {
 					$('#toast').hide().css('opacity', 0);
-				}, 2000);
+				}, 3000);
 			}
 			function loading(show) {
 				show ? $('#loading').show().css('opacity', 1) : $('#loading').hide().css('opacity', 0);

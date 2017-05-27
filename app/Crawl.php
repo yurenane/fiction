@@ -3,11 +3,16 @@
 namespace App;
 
 use Illuminate\Support\Facades\DB;
-use App\PrintCss;
 use App\Chapter;
 use App\BiQuGe;
 use App\Curl;
 
+/**
+ * 数据采集类
+ * ======
+ * @author 简强
+ * @version 17.1.12
+ */
 class Crawl {
 
 	/**
@@ -61,7 +66,7 @@ class Crawl {
 			}
 			DB::table('chapter')->insert($insert);
 			$title = $result[count($result) - 1]['title'];
-			DB::table('novel')->where('id', $id)->update(array('new' => $title,'status'=>2));
+			DB::table('novel')->where('id', $id)->update(array('new' => $title, 'status' => 2));
 			return $title;
 		} else {
 			return false;
@@ -76,10 +81,10 @@ class Crawl {
 	 */
 	private function addList($content) {
 		$curl = new Curl();
-		$_url = explode('/',  $content['info']['cover']);
+		$_url = explode('/', $content['info']['cover']);
 		$host = $_url[2];
-		$curl->setReferer('http://' . $host) ;
-		 $curl->setHeader(array('Host:' . $host));
+		$curl->setReferer('http://' . $host);
+		$curl->setHeader(array('Host:' . $host));
 		$id = '';
 		if ($content['list']) {
 			$id = uniqid();

@@ -6,15 +6,6 @@
 				<?php echo $info->content; ?>
 			</section>
 		</article>
-		<div class="weui-footer" style="margin-bottom: 60px;">
-	<!--			<p class="weui-footer__links">
-				<a href="javascript:;" class="weui-footer__link" id="on">上一章</a>
-				<a href="/novel/<?php //echo $info->list;            ?>/<?php //echo $info->link;            ?>/" class="weui-footer__link" id="list">目录</a>
-				<a href="javascript:;" class="weui-footer__link" id="next">下一章</a>
-				<a href="javascript:;" class="weui-footer__link" id="cache" >缓存</a>
-			</p>-->
-			<p class="weui-footer__text">@2017</p>
-		</div>
 	</div>
 	<div>
 		<div class="weui-mask" id="mask" style="opacity: 0; display: none;"></div>
@@ -50,19 +41,18 @@
 	$(function() {
 		var on = '<?php echo $info->on; ?>',
 				next = '<?php echo $info->next; ?>',
-				link = '<?php echo $info->link; ?>',
 				chapter_id = '<?php echo $info->chapter_id; ?>',
 				novel_id = '<?php echo $info->novel_id; ?>',
-				total=0,
+				total = 0,
 				chapter = {};
-				updateRead();
+		updateRead();
 		$('.weui-tabbar__item').on('click', function() {
 			$(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
 		});
 		// localStorage.clear();
 		$('#on').click(function() {
 			if (checkCache(on)) {
-				window.location.href = '/novel/' + on + '/' + link + '/detail';
+				window.location.href = '/novel/detail/' + on;
 			} else {
 				next = chapter_id;
 				chapter_id = on;
@@ -72,7 +62,7 @@
 		});
 		$('#next').click(function() {
 			if (checkCache(next)) {
-				window.location.href = '/novel/' + next + '/' + link + '/detail';
+				window.location.href = '/novel/detail/' + next;
 			} else {
 				on = chapter_id;
 				chapter_id = next;
@@ -96,14 +86,16 @@
 				chapter = JSON.parse(localStorage.getItem(novel_id));
 			}
 			if (chapter && chapter[id]) {
-				var num=0;
-				for(var i in chapter){
-					num++;
-					if(i==id){
-						break;
+				var num = 0;
+				for (var i in chapter) {
+					if (i != 'total') {
+						if (i == id) {
+							break;
+						}
+						num++;
 					}
 				}
-				$('#info').html('正在使用缓存（剩余<span style="color: #ff0404;">'+num+'</span>章）');
+				$('#info').html('正在使用缓存（剩余<span style="color: #ff0404;">' + (chapter['total']-num) + '</span>章）');
 				$('#info').show();
 				setHtml(chapter[id].title, chapter[id].content);
 				javascript:scroll(0, 0);
@@ -119,11 +111,12 @@
 			localStorage.clear();
 			$('#cache-info').show();
 			$('.weui-tabbar').hide();
-			$.post('/ajax/chapter-list', {'nid': novel_id, 'id': cid, 'limit': 500, 'p': 1}, function(result) {
+			$.post('/ajax/cache-chapter-list', {'nid': novel_id, 'cid': cid, 'total': 500}, function(result) {
 				$('#cache-info').hide();
 				$('.weui-tabbar').show();
 				if (result.code == 1000) {
 					var info = result.info, isOut = false;
+					chapter['total'] = result.count;
 					for (var i in info) {
 						chapter[info[i].id] = {'title': info[i].title, 'content': info[i].content};
 					}
@@ -132,13 +125,13 @@
 					} catch (oException) {
 						console.log(oException);
 						if (oException.name == 'QuotaExceededError') {
-							send(false,'数据获取失败，超出本地存储限额！');
+							send(false, '数据获取失败，超出本地存储限额！');
 							return false;
 						}
 					}
-					send(true,'数据缓存成功');
+					send(true, '数据缓存成功');
 				} else {
-					send(false,'数据获取失败');
+					send(false, result.error);
 				}
 			}, 'json');
 		}
@@ -150,14 +143,14 @@
 			}
 			return num + '_' + _id[1];
 		}
-		function updateRead(){
-			$.post('/ajax/update-read',{'nid':novel_id,'cid':chapter_id},function(result){
-				if(result.code==1000){
-					
-				}else{
-					send(false,result.error);
+		function updateRead() {
+			$.post('/ajax/update-read', {'nid': novel_id, 'cid': chapter_id}, function(result) {
+				if (result.code == 1000) {
+
+				} else {
+					send(false, result.error);
 				}
-			},'json');
+			}, 'json');
 		}
 	})
 </script>

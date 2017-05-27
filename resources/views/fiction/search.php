@@ -17,7 +17,11 @@
 		</form>
 		<a href="javascript:" class="weui-search-bar__cancel-btn" id="search">确认</a>
 	</div>
-	<div class="weui-cells searchbar-result weui-panel weui-panel__bd" id="searchList" style="display: none;margin-bottom: 60px;">
+	<div class="weui-cells searchbar-result" id="searchList" style="transform-origin: 0px 0px 0px; opacity: 1; transform: scale(1, 1);"">
+	</div>
+	<div class="weui-loadmore" style='margin-bottom: 80px;display:none;'>
+		<i class="weui-loading"></i>
+		<span class="weui-loadmore__tips">正在加载</span>
 	</div>
 </div>
 <script type="text/javascript">
@@ -26,7 +30,7 @@
 			$(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
 		});
 		function hideSearchResult() {
-			 $('#searchList').hide();
+			$('#searchList').hide();
 			$('#searchInput').val('');
 		}
 		function cancelSearch() {
@@ -51,42 +55,45 @@
 			getData();
 		});
 		$('#searchInput').bind('keydown', function(event) {
-			if(event.keyCode==13){
+			if (event.keyCode == 13) {
 				getData();
 				event.preventDefault();
 			}
 		});
-		function getData(){
+		function getData() {
 			$('#searchInput').blur();
-			loading(true);
+			$('.weui-loadmore').show();
 			$.post('/search', {'title': $('#searchInput').val()}, function(result) {
 				if (result.code == 1000) {
 					setHtml(result.info);
-					loading(false);
+					$('.weui-loadmore').hide();
 					$('#searchList').show();
 				} else {
-					send(false,result.error);
+					send(false, result.error);
+					$('.weui-loadmore').hide();
 				}
 			}, 'json');
 		}
 		function setHtml(content) {
-			var html = '';
-			if (content[0].img) {
-				for (var i in content) {
-					html += '<a href="/novel/'+ content[i]._name+'/' + content[i].link +'" class="weui-media-box weui-media-box_appmsg"><div class="weui-media-box__hd" style="width:auto;height:auto;">\n\
-				<img style="width:100px;height:125px" class="weui-media-box__thumb" src="' + content[i].img + '" alt="">\n\
-				</div><div class="weui-media-box__bd"><h4 class="weui-media-box__title">' + content[i].name + '</h4><p class="weui-media-box__desc">' + content[i].title + '</p><ul class="weui-media-box__info">\n\
-				<li class="weui-media-box__info__meta" style="margin:0;">作者：' + content[i].author + '</li><li class="weui-media-box__info__meta" style="margin:0;">更新时间：' + content[i].utime + '</li>\n\
-				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" style="margin:0;">' + (content[i].new?'最新章节：'+content[i].new:'更新状态：'+content[i].status)  + '</li></ul></div></a>';
-				}
-			}else{
-				for (var i in content) {
-					html += '<a href="/novel/'+ content[i]._name+'/' + content[i].link + '" class="weui-media-box weui-media-box_appmsg"><div class="weui-media-box__bd">\n\
-				<h4 class="weui-media-box__title">' + content[i].name + '</h4><ul class="weui-media-box__info"><li class="weui-media-box__info__meta" style="margin:0;">\n\
-				作者：' + content[i].author + '</li><li class="weui-media-box__info__meta" style="margin:0;">更新时间：' + content[i].utime + '</li>\n\
-				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" style="margin:0;">' +(content[i].new?'最新章节：'+content[i].new:'更新状态：'+content[i].status) + '</li></ul></div></a>';
-				}
+			var html = '<div class="weui-cell weui-cell_access" style="background-color: #ececec;font-size:14px;"><div class="weui-cell__bd weui-cell_primary"><p>书名</p></div>\
+					<div class="weui-cell__bd weui-cell_primary"><p>作者</p></div><div class="weui-cell__bd weui-cell_primary"><p>最新章节</p></div></div><div class="weui-cells">';
+			for (var i in content) {
+				html +='<a class="weui-cell weui-cell_access" href="/novel/add/' + content[i].link + '" style="font-size:12px;">\
+					<div class="weui-cell__bd">\
+						<p>' + content[i].name + '</p>\
+					</div>\
+						<div class="weui-cell__bd">\
+						<p>' + content[i].author + '</p>\
+					</div>\
+						<div class="weui-cell__bd">\
+						<p>' + (content[i].new ? content[i].new :content[i].status) + '</p>\
+					</div>\
+					<div class="weui-cell__ft">\
+					</div>\
+				</a>';
+
 			}
+			html +='</div>';
 			$('#searchList').append(html);
 		}
 	});

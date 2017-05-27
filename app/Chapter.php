@@ -2,13 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use App\PrintCss;
 
-class Chapter extends Model {
-
-	protected $table = 'chapter';
+class Chapter {
 
 	/**
 	 * 获取小说章节，根据小说ID
@@ -36,9 +32,29 @@ class Chapter extends Model {
 		return DB::table('chapter')->where('id', $id)->update(array('content' => $content));
 	}
 
-	public function getInfo($id) {
-		$result = self::where('id', '=', $id)->first();
-		return $result?(Object) $result->original:'';
+	/**
+	 * 获取小说章节详情
+	 * ======
+	 * @param string $id  小说章节ID
+	 * @param string $field  小说章节字段
+	 * ======
+	 * @author 简强
+	 * @version  17.5.26
+	 */
+	public function getInfo($id, $field = '*') {
+		return DB::table('chapter')->select($field)->where('id', $id)->first();
 	}
-
+	/**
+	 * 章节ID前缀补全
+	 * ======
+	 * @author 简强
+	 * @version 17.5.26
+	 */
+	public function setId($num) {
+		$_id = '';
+		for ($i = 1; $i <= (5 - strlen((string) $num)); $i++) {
+			$_id .='0';
+		}
+		return $_id . $num;
+	}
 }
