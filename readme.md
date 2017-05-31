@@ -1,15 +1,4 @@
-# Laravel Quickstart - Basic
+# 小说网站  使用Laravel开发
 
-## Quck Installation
+## gitignore 文件存放的是git忽略文件
 
-    git clone https://github.com/laravel/quickstart-basic quickstart
-
-    cd quickstart
-
-    composer install
-
-    php artisan migrate
-
-    php artisan serve
-
-[Complete Tutorial](https://laravel.com/docs/5.2/quickstart)
